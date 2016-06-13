@@ -9,8 +9,9 @@ def compile_messages(user, room_name):
 
 def summarize(title, user, room_name):
 	text = compile_messages(user, room_name)
-	print text
-	# tt = TextTeaser()
-	# return tt.summarize(title, text)
+	tt = TextTeaser()
+	return tt.summarize(title, text)
 
-summarize('summary', 'chris', 'Pipeline Discussions')
+for line in summarize('summary', 'chris', 'Pipeline Discussions'):
+    print line
+
