@@ -1,9 +1,8 @@
 import requests
 import json
 
-developer_tokens = {'tanay': 'YjA2OGJlOGMtZmMwYi00N2NjLWE4NmItNjg3NDUwZjllNTY1YjVhZWUzODEtNDU0',
-                    'chris': 'NmU5NDA1YjctY2Q2Ni00MDcyLWE0YTItMWUyYWMzNjZiNWM0YmQ0ZjgyNTctZDQz',
-                    'charu': 'MTBkOWJlZjktNDVlMC00OTQyLTg2MjgtMDU3MmYzZDk0ODczOTQyM2RjOWYtZDE0'}
+with open('developer_tokens.json') as data:
+    developer_tokens = json.load(data)
 
 def get_users(token, room_id):
     legit_token = "Bearer " + token
