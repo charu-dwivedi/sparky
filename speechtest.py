@@ -11,33 +11,32 @@ import time
 # the text file contains only ASCII characters.
 
 def speech_rec():
-	r = sr.Recognizer()
-	with sr.Microphone() as source:                # use the default microphone as the audio source
-	    audio = r.listen(source)                   # listen for the first phrase and extract it into audio data
-	try:
-	    banana = r.recognize_google(audio, language = "en-us", show_all=False)   # recognize speech using Google Speech Recognition
-	    print banana
-	    return banana
-	except LookupError:                            # speech is unintelligible
-	    print("Could not understand audio")
-	    errormess = "error"
-	    return errormess
+    r = sr.Recognizer()
+    with sr.Microphone() as source:                # use the default microphone as the audio source
+        audio = r.listen(source)                   # listen for the first phrase and extract it into audio data
+    try:
+        banana = r.recognize_google(audio, language = "en-us", show_all=False)   # recognize speech using Google Speech Recognition
+        print banana
+        return banana
+    except LookupError:                            # speech is unintelligible
+        print("Could not understand audio")
+        errormess = "error"
+        return errormess
 
 
 def speech_play_test():
-	audio_file = "test.mp3"
-	tts = gTTS(text="Hello!", lang="en")
-	tts.save(audio_file)
-	pygame.mixer.init()
-	pygame.mixer.music.load(audio_file)
-	pygame.mixer.music.play()
-	while pygame.mixer.music.get_busy() == True:
-	    continue
+    audio_file = "test.mp3"
+    tts = gTTS(text="Hello!", lang="en")
+    tts.save(audio_file)
+    pygame.mixer.init()
+    pygame.mixer.music.load(audio_file)
+    pygame.mixer.music.play()
+    while pygame.mixer.music.get_busy() == True:
+        continue
 
-	#Cannot remove audio file, have to remove it when entire application closes
-	
-
-speech_play_test()
+    #Cannot remove audio file, have to remove it when entire application closes
+    
+speech_rec()
 
 '''
 receiver = "chrchon@cisco.com"
@@ -48,8 +47,8 @@ print "Who would you like to send an email to?"
 person = speechrec()
 chrisname = "Chris"
 if chrisname.lower() in person:
-	receiver = "chrchon@cisco.com"
-	print "Sending to Chris"
+    receiver = "chrchon@cisco.com"
+    print "Sending to Chris"
 
 print "What would you like in the message?"
 message_body = speechrec()
