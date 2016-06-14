@@ -9,3 +9,7 @@ Voice assistant with the following features:
 4. Add members to the room
 
 5. Chat summaries in a date range
+
+Dependencies:
+
+- Google API library
