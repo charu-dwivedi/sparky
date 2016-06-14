@@ -29,9 +29,16 @@ def indent_tagged(text, tags):
 			last_tag = tag
 	return indented
 
+"""
+Use get_transcript to get a transcript of chat messages
+"""
+def get_transcript(user, room_name):
+	return indent_tagged(compile_messages(user, room_name).splitlines(), utils.get_emails_with_users(user, room_name).values())
+
+"""
+Use summarize to summarize chat messages in a room with NLP
+"""
 def summarize(title, user, room_name):
 	text = compile_messages(user, room_name)
 	tt = TextTeaser()
 	return indent_tagged(tt.summarize(title, text), utils.get_emails_with_users(user, room_name).values())
-	
-print summarize('summary', 'chris', 'Pipeline Discussions')
