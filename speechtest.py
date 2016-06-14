@@ -1,14 +1,15 @@
 # NOTE: this requires PyAudio because it uses the Microphone class
 import speech_recognition as sr
 import smtplib
-
+from gtts import gTTS
 # Import the email modules we'll need
 from email.mime.text import MIMEText
-
+import pygame
+ 
 # Open a plain text file for reading.  For this example, assume that
 # the text file contains only ASCII characters.
 
-def speechrec():
+def speech_rec():
 	r = sr.Recognizer()
 	with sr.Microphone() as source:                # use the default microphone as the audio source
 	    audio = r.listen(source)                   # listen for the first phrase and extract it into audio data
@@ -21,7 +22,17 @@ def speechrec():
 	    errormess = "error"
 	    return errormess
 
-speechrec()
+#speechrec()
+
+def speech_play_test():
+	audio_file = "test.mp3"
+	tts = gTTS(text="Hello!", lang="en")
+	tts.save(audio_file)
+	pygame.mixer.init()
+	pygame.mixer.music.load(audio_file)
+	pygame.mixer.music.play()
+	while pygame.mixer.music.get_busy() == True:
+	    continue
 
 
 '''

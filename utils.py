@@ -88,16 +88,15 @@ def create_room(token, room_name):
 
 def delete_room(token, room_id):  
     legit_token = "Bearer " + token  
-    url = 'https://api.ciscospark.com/v1/rooms'
+    url = 'https://api.ciscospark.com/v1/rooms/'+room_id
     headers = {
         'Authorization': legit_token
     }
     params = {
         'roomId': room_id
     }
-    users_json = requests.delete(url, headers=headers, params=params).json()
-    print "Delete Output:"
-    print users_json
+    delete_output_code = requests.delete(url, headers=headers, params=params)
+    return delete_output_code   
 
 def add_members_to_room(token, room_id, room_members):
     legit_token = "Bearer " + token
@@ -120,8 +119,10 @@ def add_members_to_room(token, room_id, room_members):
                 'roomId': room_id,
                 'personId':matching_members['items'][0]['id']
             }
-            membership_create_response = requests.post(join_url, headers=headers, data=add_params)
+            membership_create_response = requests.post(join_url, headers=headers, data=add_params).json()
             print membership_create_response
+        else: 
+            print "Add functionality for multiple members!"
 
 
 
@@ -131,8 +132,8 @@ def add_members_to_room(token, room_id, room_members):
 #print get_roomid('dockerize teamgold services', developer_tokens['tanay'])
 #print get_messages_for_user('tanay', 'dockerize teamgold services')
 
-#room_members = ["Christopher Chon"]
-#rname = "test_room"
-#room_id = create_room(developer_tokens['charu'], rname)
-#add_members_to_room(developer_tokens['charu'], room_id, room_members)
-#delete_room(developer_tokens['charu'], room_id)
+room_members = ["Christopher Chon", "Anjum Shaik", "Tanay Nathan"]
+rname = "test_room"
+room_id = create_room(developer_tokens['charu'], rname)
+add_members_to_room(developer_tokens['charu'], room_id, room_members)
+delete_room(developer_tokens['charu'], room_id)
