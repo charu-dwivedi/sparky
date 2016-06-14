@@ -79,31 +79,6 @@ def get_room(room_name, token, max_msgs=float('inf'), room_type=None):
 def get_roomid(room_name, token, max_msgs=float('inf'), room_type=None):
     return get_room(room_name, token, max_msgs=float('inf'), room_type=None)['id']
 
-"""
-Use these functions
-"""
-# returns messages from a room
-def get_messages_for_user(user, room_name):
-    if user not in developer_tokens:
-        raise Exception("User {} doesn't exist".format(user))
-    return get_messages(developer_tokens[user], get_roomid(room_name, developer_tokens[user]))
-
-# returns users, email tuple in a room
-def get_users_for_room(user, room_name):
-    if user not in developer_tokens:
-        raise Exception("User {} doesn't exist".format(user))
-    return get_users(developer_tokens[user], get_roomid(room_name, developer_tokens[user]))
-
-# returns a dictionary with email-username pairs
-def get_emails_with_users(user, room_name):
-    if user not in developer_tokens:
-        raise Exception("User {} doesn't exist".format(user))
-    return get_email_user(developer_tokens[user], get_roomid(room_name, developer_tokens[user]))
-
-
-##########################################
-
-
 def create_room(token, room_name):
     legit_token = "Bearer " + token
     url = 'https://api.ciscospark.com/v1/rooms'
@@ -199,8 +174,33 @@ def add_members_to_room(token, room_id, member_input):
             membership_create_response = requests.post(join_url, headers=headers, data=add_params).json()
 
 
+"""
+Use these functions
+"""
+# returns messages from a room
+def get_messages_for_user(user, room_name):
+    if user not in developer_tokens:
+        raise Exception("User {} doesn't exist".format(user))
+    return get_messages(developer_tokens[user], get_roomid(room_name, developer_tokens[user]))
+
+# returns users, email tuple in a room
+def get_users_for_room(user, room_name):
+    if user not in developer_tokens:
+        raise Exception("User {} doesn't exist".format(user))
+    return get_users(developer_tokens[user], get_roomid(room_name, developer_tokens[user]))
+
+# returns a dictionary with email-username pairs
+def get_emails_with_users(user, room_name):
+    if user not in developer_tokens:
+        raise Exception("User {} doesn't exist".format(user))
+    return get_email_user(developer_tokens[user], get_roomid(room_name, developer_tokens[user]))
+
+
+##########################################
+
 #users = get_users(developer_tokens['tanay'], 'Y2lzY29zcGFyazovL3VzL1JPT00vYjhhMmFhYjAtMmU5Mi0xMWU2LTg0YWEtNWY1MGViMDZhMjAx')
 #print get_messages(developer_tokens['tanay'], 'Y2lzY29zcGFyazovL3VzL1JPT00vYjhhMmFhYjAtMmU5Mi0xMWU2LTg0YWEtNWY1MGViMDZhMjAx')
+<<<<<<< HEAD
 #print get_roomid('dockerize teamgold services', developer_tokens['tanay'])
 #print get_messages_for_user('tanay', 'dockerize teamgold services')
 
@@ -209,4 +209,14 @@ def add_members_to_room(token, room_id, member_input):
 #room_id = create_room(developer_tokens['charu'], rname)
 #add_members_to_room(developer_tokens['charu'], room_id, room_members)
 #delete_room(developer_tokens['charu'], room_id)
+=======
+# print get_roomid('Hacker Squad', developer_tokens['chris'])
+# print get_messages_for_user('chris', 'Hacker Squad')
+
+# room_members = ["Christopher Chon", "Anjum Shaik", "Tanay Nathan"]
+# rname = "test_room"
+# room_id = create_room(developer_tokens['charu'], rname)
+# add_members_to_room(developer_tokens['charu'], room_id, room_members)
+# delete_room(developer_tokens['charu'], room_id)
+>>>>>>> cfbc43b16b86cf3b90f0f71c9a9b1981525cb9b6
 
