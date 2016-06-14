@@ -1,9 +1,8 @@
 import requests
 import json
 
-developer_tokens = {'tanay': 'YjA2OGJlOGMtZmMwYi00N2NjLWE4NmItNjg3NDUwZjllNTY1YjVhZWUzODEtNDU0',
-                    'chris': 'NmU5NDA1YjctY2Q2Ni00MDcyLWE0YTItMWUyYWMzNjZiNWM0YmQ0ZjgyNTctZDQz',
-                    'charu': 'MTBkOWJlZjktNDVlMC00OTQyLTg2MjgtMDU3MmYzZDk0ODczOTQyM2RjOWYtZDE0'}
+with open('developer_tokens.json') as data:
+    developer_tokens = json.load(data)
 
 def get_users(token, room_id):
     legit_token = "Bearer " + token
@@ -97,3 +96,71 @@ def get_emails_with_users(user, room_name):
     if user not in developer_tokens:
         raise Exception("User {} doesn't exist".format(user))
     return get_email_user(developer_tokens[user], get_roomid(room_name, developer_tokens[user]))
+
+
+##########################################
+
+
+def create_room(token, room_name):
+    legit_token = "Bearer " + token
+    url = 'https://api.ciscospark.com/v1/rooms'
+    headers = {
+        'Authorization': legit_token
+    }
+    params = {
+        'title': room_name
+    }
+    users_json = requests.post(url, headers=headers, data=params).json()
+    room_id = users_json['id']
+    return room_id
+
+def delete_room(token, room_id):  
+    legit_token = "Bearer " + token  
+    url = 'https://api.ciscospark.com/v1/rooms/'+room_id
+    headers = {
+        'Authorization': legit_token
+    }
+    params = {
+        'roomId': room_id
+    }
+    delete_output_code = requests.delete(url, headers=headers, params=params)
+    return delete_output_code   
+
+def add_members_to_room(token, room_id, room_members):
+    legit_token = "Bearer " + token
+    search_url = "https://api.ciscospark.com/v1/people"
+    join_url = "https://api.ciscospark.com/v1/memberships"
+    for member in room_members:
+        headers = {
+            'Authorization': legit_token
+        }
+        params = {
+            'displayName': member
+        }
+        count =0
+        matching_members = requests.get(search_url, headers=headers, params = params).json()
+        for matched_member in matching_members['items']:
+            print matched_member['displayName']
+            count+= 1
+        if count ==1:
+            add_params = {
+                'roomId': room_id,
+                'personId':matching_members['items'][0]['id']
+            }
+            membership_create_response = requests.post(join_url, headers=headers, data=add_params).json()
+            print membership_create_response
+        else: 
+            print "Add functionality for multiple members!"
+
+
+#users = get_users(developer_tokens['tanay'], 'Y2lzY29zcGFyazovL3VzL1JPT00vYjhhMmFhYjAtMmU5Mi0xMWU2LTg0YWEtNWY1MGViMDZhMjAx')
+#print get_messages(developer_tokens['tanay'], 'Y2lzY29zcGFyazovL3VzL1JPT00vYjhhMmFhYjAtMmU5Mi0xMWU2LTg0YWEtNWY1MGViMDZhMjAx')
+#print get_roomid('dockerize teamgold services', developer_tokens['tanay'])
+#print get_messages_for_user('tanay', 'dockerize teamgold services')
+
+room_members = ["Christopher Chon", "Anjum Shaik", "Tanay Nathan"]
+rname = "test_room"
+room_id = create_room(developer_tokens['charu'], rname)
+add_members_to_room(developer_tokens['charu'], room_id, room_members)
+delete_room(developer_tokens['charu'], room_id)
+
