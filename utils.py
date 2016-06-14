@@ -151,12 +151,12 @@ def get_emails_with_users(user, room_name):
 
 #users = get_users(developer_tokens['tanay'], 'Y2lzY29zcGFyazovL3VzL1JPT00vYjhhMmFhYjAtMmU5Mi0xMWU2LTg0YWEtNWY1MGViMDZhMjAx')
 #print get_messages(developer_tokens['tanay'], 'Y2lzY29zcGFyazovL3VzL1JPT00vYjhhMmFhYjAtMmU5Mi0xMWU2LTg0YWEtNWY1MGViMDZhMjAx')
-#print get_roomid('dockerize teamgold services', developer_tokens['tanay'])
-#print get_messages_for_user('tanay', 'dockerize teamgold services')
+# print get_roomid('Hacker Squad', developer_tokens['chris'])
+# print get_messages_for_user('chris', 'Hacker Squad')
 
-room_members = ["Christopher Chon", "Anjum Shaik", "Tanay Nathan"]
-rname = "test_room"
-room_id = create_room(developer_tokens['charu'], rname)
-add_members_to_room(developer_tokens['charu'], room_id, room_members)
-delete_room(developer_tokens['charu'], room_id)
+# room_members = ["Christopher Chon", "Anjum Shaik", "Tanay Nathan"]
+# rname = "test_room"
+# room_id = create_room(developer_tokens['charu'], rname)
+# add_members_to_room(developer_tokens['charu'], room_id, room_members)
+# delete_room(developer_tokens['charu'], room_id)
 
