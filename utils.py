@@ -4,9 +4,6 @@ import json
 with open('developer_tokens.json') as data:
     developer_tokens = json.load(data)
 
-with open('suggested_users.json') as sugg:
-    sugg_users = json.load(sugg)
-
 def get_users(token, room_id):
     legit_token = "Bearer " + token
     url = 'https://api.ciscospark.com/v1/memberships'
@@ -104,56 +101,7 @@ def delete_room(token, room_id):
     delete_output_code = requests.delete(url, headers=headers, params=params)
     return delete_output_code   
 
-def check_suggested_members(member_name):
-    if member_name in sugg_users:
-        if (len(sugg_users[member_name])>1):
-            print "Did you mean one of these? "
-            count =1
-            for suggested_member in sugg_users[mem]:
-                print count + ": "+ suggested_member[0]
-                print "   " + suggested_member[1]
-            num = raw_input("Respond with a number: ")
-            return sugg_users[name][num-1][1]
-        else:
-            return sugg_users[name][0][1]
-    else:
-        return 0
-
-
-
-def find_members(token, member_input):
-    final_member_list = []
-    legit_token = "Bearer " + token
-    search_url = "https://api.ciscospark.com/v1/people"
-    for member in member_input:
-        headers = {
-            'Authorization': legit_token
-        }
-        params = {
-            'displayName': member
-        }
-        matching_members = requests.get(search_url, headers=headers, params=params).json()
-        if len(matching_members['items']) == 0:
-            print "No matching members"
-        elif len(matching_members['items']) == 1:
-            final_member_list.append(matching_members['items'][0]['email'])
-        elif len(matching_members['items']) > 5:
-            found_member = check_suggested_members((member.split())[0])
-            if found_member == 0:
-                print "Please specify " + member + " a bit more"
-            else:
-                final_member_list.append(found_member)
-        else:
-            print "Did you mean one of these? "
-            for matched_member in matching_members['items']:
-                print count + ": "+ 
-                print "   " + suggested_member[1]
-            num = raw_input("Respond with a number: ")
-
-
-
-
-def add_members_to_room(token, room_id, member_input):
+def add_members_to_room(token, room_id, room_members):
     legit_token = "Bearer " + token
     search_url = "https://api.ciscospark.com/v1/people"
     join_url = "https://api.ciscospark.com/v1/memberships"
@@ -164,15 +112,18 @@ def add_members_to_room(token, room_id, member_input):
         params = {
             'displayName': member
         }
-        count =0    
-        members_to_add = find_members(token, member_input)
-        for member_email in members_to_add:
+        count =0
+        matching_members = requests.get(search_url, headers=headers, params = params).json()
+        for matched_member in matching_members['items']:
+            count+= 1
+        if count ==1:
             add_params = {
                 'roomId': room_id,
-                'personEmail':member_email
+                'personId':matching_members['items'][0]['id']
             }
             membership_create_response = requests.post(join_url, headers=headers, data=add_params).json()
-
+        else: 
+            print "Add functionality for multiple members!"
 
 """
 Use these functions
@@ -200,16 +151,6 @@ def get_emails_with_users(user, room_name):
 
 #users = get_users(developer_tokens['tanay'], 'Y2lzY29zcGFyazovL3VzL1JPT00vYjhhMmFhYjAtMmU5Mi0xMWU2LTg0YWEtNWY1MGViMDZhMjAx')
 #print get_messages(developer_tokens['tanay'], 'Y2lzY29zcGFyazovL3VzL1JPT00vYjhhMmFhYjAtMmU5Mi0xMWU2LTg0YWEtNWY1MGViMDZhMjAx')
-<<<<<<< HEAD
-#print get_roomid('dockerize teamgold services', developer_tokens['tanay'])
-#print get_messages_for_user('tanay', 'dockerize teamgold services')
-
-#room_members = ["Christopher Chon", "Anjum Shaik", "Tanay Nathan"]
-#rname = "test_room"
-#room_id = create_room(developer_tokens['charu'], rname)
-#add_members_to_room(developer_tokens['charu'], room_id, room_members)
-#delete_room(developer_tokens['charu'], room_id)
-=======
 # print get_roomid('Hacker Squad', developer_tokens['chris'])
 # print get_messages_for_user('chris', 'Hacker Squad')
 
@@ -218,5 +159,4 @@ def get_emails_with_users(user, room_name):
 # room_id = create_room(developer_tokens['charu'], rname)
 # add_members_to_room(developer_tokens['charu'], room_id, room_members)
 # delete_room(developer_tokens['charu'], room_id)
->>>>>>> cfbc43b16b86cf3b90f0f71c9a9b1981525cb9b6
 
