@@ -18,8 +18,7 @@ def get_users(token, room_id):
     users_json = requests.get(url, headers=headers, params=params).json()
     users = []
     for user in users_json['items']:
-        print user['personDisplayName']
-        users.append(user['personDisplayName'])
+        users.append((user['personDisplayName'], user['personEmail']))
     return users
 
 def get_messages(token, room_id, before=None, before_msg=None, max_msgs=float('inf')):
