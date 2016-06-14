@@ -1,7 +1,6 @@
 import utils
 from datetime import datetime
 import pytz
-
 from textteaser import TextTeaser
 
 def tag_message(msg, tag):
@@ -11,14 +10,13 @@ def tag_message(msg, tag):
 def compile_messages(user, room_name, days_limit=None, hours_limit=None, min_limit=None):
     text, email_with_users = '', utils.get_emails_with_users(user, room_name)
     now = pytz.utc.localize(datetime.utcnow())
-    print now
     for msg in reversed(utils.get_messages_for_user(user, room_name)['items']):
         if 'text' in msg:
             time = pytz.utc.localize(datetime.strptime(msg['created'], '%Y-%m-%dT%H:%M:%S.%fZ'))
             if days_limit == None and hours_limit == None and min_limit == None or \
                 days_limit != None and abs((now - time).days) <= days_limit or \
                 hours_limit != None and abs((now - time).total_seconds()) // 3600 <= hours_limit or \
-                min_limit != None and abs((now - time).seconds) // 60 <= days_limit:\
+                min_limit != None and abs((now - time).seconds) // 60 <= min_limit:\
                 text += tag_message(msg, email_with_users[msg['personEmail']])
     return text.rstrip()
 
@@ -47,7 +45,6 @@ def indent_tagged(text, tags):
 
 """
 Use get_transcript to get a transcript of chat messages
-Don't use the limits. We have not been able to account for timezones
 """
 def get_transcript(user, room_name, days_limit=None, hours_limit=None, min_limit=None):
     return indent_tagged(compile_messages(user, room_name, days_limit, hours_limit, min_limit).splitlines(), \
@@ -55,7 +52,6 @@ def get_transcript(user, room_name, days_limit=None, hours_limit=None, min_limit
 
 """
 Use summarize to summarize chat messages in a room with NLP
-Don't use the limits. We have not been able to account for timezones
 """
 def summarize(title, user, room_name, days_limit=None, hours_limit=None, min_limit=None):
     text = compile_messages(user, room_name, days_limit, hours_limit, min_limit)
@@ -63,4 +59,5 @@ def summarize(title, user, room_name, days_limit=None, hours_limit=None, min_lim
     return indent_tagged(tt.summarize(title, text), utils.get_emails_with_users(user, room_name).values())
 
 # print summarize('ping pong', 'chris', 'Ping Pong SJ-29', 6)
-print summarize('cool title', 'chris', 'Hacker Squad', None, 5)
+# print summarize('cool title', 'chris', 'Hacker Squad', None, 8)
+# print get_transcript('chris', 'Hacker Squad', None, 8)
