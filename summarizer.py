@@ -11,6 +11,7 @@ def tag_message(msg, tag):
 def compile_messages(user, room_name, days_limit=None, hours_limit=None, min_limit=None):
     text, email_with_users = '', utils.get_emails_with_users(user, room_name)
     now = pytz.utc.localize(datetime.utcnow())
+    print now
     for msg in reversed(utils.get_messages_for_user(user, room_name)['items']):
         if 'text' in msg:
             time = pytz.utc.localize(datetime.strptime(msg['created'], '%Y-%m-%dT%H:%M:%S.%fZ'))
