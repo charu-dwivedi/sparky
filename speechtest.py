@@ -10,7 +10,7 @@ import time
 # Open a plain text file for reading.  For this example, assume that
 # the text file contains only ASCII characters.
 
-def speech_rec():
+def speechrec():
     r = sr.Recognizer()
     with sr.Microphone() as source:                # use the default microphone as the audio source
         audio = r.listen(source)                   # listen for the first phrase and extract it into audio data
@@ -23,20 +23,8 @@ def speech_rec():
         errormess = "error"
         return errormess
 
+speechrec()
 
-def speech_play_test():
-    audio_file = "test.mp3"
-    tts = gTTS(text="Hello!", lang="en")
-    tts.save(audio_file)
-    pygame.mixer.init()
-    pygame.mixer.music.load(audio_file)
-    pygame.mixer.music.play()
-    while pygame.mixer.music.get_busy() == True:
-        continue
-
-    #Cannot remove audio file, have to remove it when entire application closes
-    
-speech_rec()
 
 '''
 receiver = "chrchon@cisco.com"
