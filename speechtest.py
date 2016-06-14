@@ -32,12 +32,10 @@ def speech_play_test():
 	pygame.mixer.music.load(audio_file)
 	pygame.mixer.music.play()
 	while pygame.mixer.music.get_busy() == True:
-	    pygame.event.wait()
-	time.sleep(1)
+	    continue
 
-
-
-	os.remove(audio_file)
+	#Cannot remove audio file, have to remove it when entire application closes
+	
 
 speech_play_test()
 

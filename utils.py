@@ -91,7 +91,13 @@ def get_users_for_room(user, room_name):
         raise Exception("User {} doesn't exist".format(user))
     return get_users(developer_tokens[user], get_roomid(room_name, developer_tokens[user]))
 
-<<<<<<< HEAD
+# returns a dictionary with email-username pairs
+def get_emails_with_users(user, room_name):
+    if user not in developer_tokens:
+        raise Exception("User {} doesn't exist".format(user))
+    return get_email_user(developer_tokens[user], get_roomid(room_name, developer_tokens[user]))
+
+
 ##########################################
 
 
@@ -147,8 +153,6 @@ def add_members_to_room(token, room_id, room_members):
             print "Add functionality for multiple members!"
 
 
-
-
 #users = get_users(developer_tokens['tanay'], 'Y2lzY29zcGFyazovL3VzL1JPT00vYjhhMmFhYjAtMmU5Mi0xMWU2LTg0YWEtNWY1MGViMDZhMjAx')
 #print get_messages(developer_tokens['tanay'], 'Y2lzY29zcGFyazovL3VzL1JPT00vYjhhMmFhYjAtMmU5Mi0xMWU2LTg0YWEtNWY1MGViMDZhMjAx')
 #print get_roomid('dockerize teamgold services', developer_tokens['tanay'])
@@ -159,10 +163,4 @@ rname = "test_room"
 room_id = create_room(developer_tokens['charu'], rname)
 add_members_to_room(developer_tokens['charu'], room_id, room_members)
 delete_room(developer_tokens['charu'], room_id)
-=======
-# returns a dictionary with email-username pairs
-def get_emails_with_users(user, room_name):
-    if user not in developer_tokens:
-        raise Exception("User {} doesn't exist".format(user))
-    return get_email_user(developer_tokens[user], get_roomid(room_name, developer_tokens[user]))
->>>>>>> 10b90de154ec941b62f393fcffbef9c9d9d18b33
+
