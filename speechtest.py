@@ -5,7 +5,8 @@ from gtts import gTTS
 # Import the email modules we'll need
 from email.mime.text import MIMEText
 import pygame
- 
+import os
+import time
 # Open a plain text file for reading.  For this example, assume that
 # the text file contains only ASCII characters.
 
@@ -22,7 +23,6 @@ def speech_rec():
 	    errormess = "error"
 	    return errormess
 
-#speechrec()
 
 def speech_play_test():
 	audio_file = "test.mp3"
@@ -32,8 +32,14 @@ def speech_play_test():
 	pygame.mixer.music.load(audio_file)
 	pygame.mixer.music.play()
 	while pygame.mixer.music.get_busy() == True:
-	    continue
+	    pygame.event.wait()
+	time.sleep(1)
 
+
+
+	os.remove(audio_file)
+
+speech_play_test()
 
 '''
 receiver = "chrchon@cisco.com"
