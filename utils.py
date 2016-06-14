@@ -146,6 +146,17 @@ def get_emails_with_users(user, room_name):
         raise Exception("User {} doesn't exist".format(user))
     return get_email_user(developer_tokens[user], get_roomid(room_name, developer_tokens[user]))
 
+# returns id of newly created room
+def make_room(user, room_name):
+    return create_room(developer_tokens[user], room_name)
+
+# returns output code for delete
+def remove_room(user, room_name):
+    return delete_room(developer_tokens[user], get_roomid(room_name, developer_tokens[user]))
+
+# adds room_members to room
+def add_members(user, room_name, room_members):
+    add_members_to_room(developer_tokens[user], get_roomid(room_name, developer_tokens[user]), room_members)
 
 ##########################################
 
@@ -156,7 +167,6 @@ def get_emails_with_users(user, room_name):
 
 # room_members = ["Christopher Chon", "Anjum Shaik", "Tanay Nathan"]
 # rname = "test_room"
-# room_id = create_room(developer_tokens['charu'], rname)
-# add_members_to_room(developer_tokens['charu'], room_id, room_members)
-# delete_room(developer_tokens['charu'], room_id)
-
+# print make_room('charu', rname)
+# add_members('charu', rname, room_members)
+# print remove_room('charu', rname)
