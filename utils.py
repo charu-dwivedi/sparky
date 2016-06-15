@@ -85,7 +85,6 @@ def get_roomid(room_name, token, max_msgs=float('inf'), room_type=None):
 """
 Internal Room Action Commands
 """
-
 def check_suggested_members(member_name):
     if member_name in sugg_users:
         if (len(sugg_users[member_name])>1):
@@ -207,6 +206,12 @@ def get_emails_with_users(user, room_name):
         raise Exception("User {} doesn't exist".format(user))
     return get_email_user(developer_tokens[user], get_roomid(room_name, developer_tokens[user]))
 
+def get_all_rooms(user, max_rooms=float('inf'), room_type=None):
+    rooms = []
+    for r in get_rooms(developer_tokens[user], max_rooms, room_type)['items']:
+        rooms.append(r['title'])
+    return rooms
+
 # creates room and returns id of newly created room
 def make_room(user, room_name):
     return create_room(developer_tokens[user], room_name)
@@ -222,6 +227,9 @@ def add_members(user, room_name, room_members):
 # changes an existing room's name and returns the output code (returns None if rooms doesn't exist)
 def rename_room(user, room_name, new_room_name):
     return change_room_name(developer_tokens[user], room_name, new_room_name)
+
+def search_members(user, member_input):
+    return find_members(developer_tokens[user], member_input)
 
 ##########################################
 
