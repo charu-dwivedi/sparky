@@ -4,6 +4,9 @@ import json
 with open('developer_tokens.json') as data:
     developer_tokens = json.load(data)
 
+with open('suggested_users.json') as sugg:
+    sugg_users = json.load(sugg)
+
 """
 Internal Room Queries
 """
@@ -88,17 +91,15 @@ def check_suggested_members(member_name):
         if (len(sugg_users[member_name])>1):
             print "Did you mean one of these? "
             count =1
-            for suggested_member in sugg_users[mem]:
+            for suggested_member in sugg_users[member_name]:
                 print count + ": "+ suggested_member[0]
                 print "   " + suggested_member[1]
             num = raw_input("Respond with a number: ")
-            return sugg_users[name][num-1][1]
+            return sugg_users[member_name][num-1][1]
         else:
-            return sugg_users[name][0][1]
+            return sugg_users[member_name][0][1]
     else:
         return 0
- 
- 
  
 def find_members(token, member_input):
     final_member_list = []
@@ -112,6 +113,7 @@ def find_members(token, member_input):
             'displayName': member
         }
         matching_members = requests.get(search_url, headers=headers, params=params).json()
+        return matching_members
         if len(matching_members['items']) == 0:
             print "No matching members"
         elif len(matching_members['items']) == 1:
@@ -125,9 +127,9 @@ def find_members(token, member_input):
         else:
             print "Did you mean one of these? "
             for matched_member in matching_members['items']:
-                print count + ": "+ 
-                print "   " + suggested_member[1]
+                print count + ": "+ matched_member
             num = raw_input("Respond with a number: ")
+    return final_member_list
 
 def create_room(token, room_name):
     legit_token = "Bearer " + token
@@ -155,43 +157,35 @@ def delete_room(token, room_id):
     return delete_output_code   
 
 def add_members_to_room(token, room_id, member_input):
-     legit_token = "Bearer " + token
-     search_url = "https://api.ciscospark.com/v1/people"
-     join_url = "https://api.ciscospark.com/v1/memberships"
-     for member in room_members:
-         headers = {
-             'Authorization': legit_token
-         }
-         params = {
-             'displayName': member
-         }
-         count =0    
-         members_to_add = find_members(token, member_input)
-         for member_email in members_to_add:
-             add_params = {
-                 'roomId': room_id,
-                 'personEmail':member_email
-             }
-             membership_create_response = requests.post(join_url, headers=headers, data=add_params).json()
+    legit_token = "Bearer " + token
+    join_url = "https://api.ciscospark.com/v1/memberships"
+    headers = {
+        'Authorization': legit_token
+    }
+    for member_email in member_input:
+        add_params = {
+            'roomId': room_id,
+            'personEmail':member_email
+        }
+    membership_create_response = requests.post(join_url, headers=headers, data=add_params).json()
 
 def change_room_name(token, old_name, new_name):
-     legit_token = "Bearer " + token
-     rooms = get_rooms(token)['items']
-     for r in rooms:
-         if r['title'] == old_name:
-             update_url = 'https://api.ciscospark.com/v1/rooms/%s' % r['id']
-             headers = {
-                 'Accept': 'application/json',
-                 'Authorization': legit_token
-             }
-             params = {
-                 'title': new_name
-             }
-             return requests.put(update_url, headers=headers, data=params).json()
-     print 'Room \'%s\' could not be found' % old_name
-     print 'No room updated'
-     return None
-
+    legit_token = "Bearer " + token
+    rooms = get_rooms(token)['items']
+    for r in rooms:
+        if r['title'] == old_name:
+            update_url = 'https://api.ciscospark.com/v1/rooms/%s' % r['id']
+            headers = {
+                'Accept': 'application/json',
+                'Authorization': legit_token
+            }
+            params = {
+                'title': new_name
+            }
+            return requests.put(update_url, headers=headers, data=params).json()
+    print 'Room \'%s\' could not be found' % old_name
+    print 'No room updated'
+    return None
 """
 Use these functions
 """
