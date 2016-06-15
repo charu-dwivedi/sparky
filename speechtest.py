@@ -1,10 +1,10 @@
 # NOTE: this requires PyAudio because it uses the Microphone class
+from gtts import gTTS
+import pygame
 import speech_recognition as sr
 import smtplib
-from gtts import gTTS
 # Import the email modules we'll need
 from email.mime.text import MIMEText
-import pygame
 import os
 import time
 import pyvona
@@ -37,11 +37,10 @@ def speechrec():
         banana = r.recognize_google(audio, language = "en-us", show_all=False)   # recognize speech using Google Speech Recognition
         return banana
     except:                            # speech is unintelligible
+<<<<<<< aca1b3253aecceb58c81993b53841fbae77a62e8
         errormess = "Could not understand audio, please try again"
         speech_play_test(errormess)
-#speechrec()
-
-
+        return errormess
 '''
 receiver = "chrchon@cisco.com"
 

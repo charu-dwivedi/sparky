@@ -13,3 +13,4 @@ Voice assistant with the following features:
 Dependencies:
 
 - Google API library
+- Pillow upgrade (pip install -I --no-cache-dir Pillow)
