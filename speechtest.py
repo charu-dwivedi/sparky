@@ -29,6 +29,7 @@ def audio_file_remove():
      #Cannot remove audio file, have to remove it when entire application close
 
 def speechrec():
+    print "running again"
     r = sr.Recognizer()
     with sr.Microphone() as source:                # use the default microphone as the audio source
         audio = r.listen(source)                   # listen for the first phrase and extract it into audio data
@@ -36,9 +37,8 @@ def speechrec():
         banana = r.recognize_google(audio, language = "en-us", show_all=False)   # recognize speech using Google Speech Recognition
         return banana
     except:                            # speech is unintelligible
-        errormess = "Could not understand audio"
-        return errormess
-
+        errormess = "Could not understand audio, please try again"
+        speech_play_test(errormess)
 #speechrec()
 
 
