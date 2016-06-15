@@ -18,16 +18,4 @@ def iterate(top, text):
 	while not user_input:
 		user_input = speechtest.speechrec()
 	text.set(user_input)
-	langprocess.process(user_input, text)
-	'''
-    user_input = 'Can I set up a 	meeting?'
-    text.set(text.get() +  '	You: ' + user_input + '\n\n')
-    user_input = ""
-    while not user_input:
-        user_input = speechtest.speechrec()
-    langprocess.process(user_input)
-    text.set(text.get() +  'You: ' + user_input + '\n\n')
-    top.update_idletasks()
-    time.sleep(1)
-    sparky_output = ''
-    text.set(text.get() + 'Sparky: ' + sparky_output + '\n\n')
+	langprocess.process('charu', user_input, text)

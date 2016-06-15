@@ -166,7 +166,7 @@ def add_members_to_room(token, room_id, member_input):
             'roomId': room_id,
             'personEmail':member_email
         }
-    membership_create_response = requests.post(join_url, headers=headers, data=add_params).json()
+        membership_create_response = requests.post(join_url, headers=headers, data=add_params).json()
 
 def change_room_name(token, old_name, new_name):
     legit_token = "Bearer " + token
@@ -223,6 +223,9 @@ def remove_room(user, room_name):
 # adds room_members to room
 def add_members(user, room_name, room_members):
     add_members_to_room(developer_tokens[user], get_roomid(room_name, developer_tokens[user]), room_members)
+
+def add_members_with_room_id(user, room_id, room_members):
+    add_members_to_room(developer_tokens[user], room_id, room_members)
 
 # changes an existing room's name and returns the output code (returns None if rooms doesn't exist)
 def rename_room(user, room_name, new_room_name):

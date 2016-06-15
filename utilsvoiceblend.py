@@ -6,6 +6,9 @@ from Tkinter import StringVar
 with open('developer_tokens.json') as data:
     developer_tokens = json.load(data)
 
+with open('suggested_users.json') as sugg:
+    sugg_users = json.load(sugg)
+
 def check_suggested_members_voice(member_name, text):
     if member_name in sugg_users:
         if (len(sugg_users[member_name])>1):
@@ -37,14 +40,13 @@ def find_members_voice(user, member_input, text):
             'displayName': member
         }
         matching_members = requests.get(search_url, headers=headers, params=params).json()
-        return matching_members
         if len(matching_members['items']) == 0:
             no_members = "No matching members for " + member
             speech.speech_play_test(member)
         elif len(matching_members['items']) == 1:
             final_member_list.append(matching_members['items'][0]['email'])
         elif len(matching_members['items']) > 5:
-            found_member = check_suggested_members((member.split())[0])
+            found_member = check_suggested_members_voice((member.split())[0], text)
             if found_member == 0:
                 specify_member = "Please specify " + member + "a bit more"
                 speech.speech_play_test(member)

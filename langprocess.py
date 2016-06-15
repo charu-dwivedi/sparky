@@ -136,20 +136,21 @@ def create_room_dialog(room_name_added, room_members_added, text, room_name="", 
             print new_members_array
             new_member_email = uvb.find_members_voice('charu', new_members_array, text)
             print new_member_email
-            utils.add_members('charu', room_id, new_member_email)
+            utils.add_members_with_room_id('charu', room_id, new_member_email)
             added_members_response = "Members have ben added to " + room_name 
             speech.speech_play_test(added_members_response)
 
 """
 Call process to use langprocess
 """
-def process(user, user_input):
+def process(user, user_input, text):
     room_caller = 0
     for words in create_room_keywords:
         if words in user_input.lower():
-            room_caller +=1
+            room_caller += 1 
     if room_caller == 2:
-        create_room_dialog(False, False, user_input)
+        create_room_dialog(False, False, text)
+    print user_input
     print translate_to_commands(user, user_input.split())
 
 # process('chris', 'chris tanay beast beast transcript Ping Pong SJ-29 peanut')
