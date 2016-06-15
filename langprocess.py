@@ -36,14 +36,4 @@ def create_room_dialog(room_name_added, room_members_added, room_name="", room_m
             speech.speech_play_test(no_response)
         if 'y' in resp.lower():
             yes_response = ""
-
-def create_room_dialog(room_name_added, room_name="", room_members_added=0, room_members=[]):
-	if room_name_added:
-		utils.make_room('charu', room_name)
-	else:
-		name_prompt = "What would you like to name your room?"
-		speech.speech_play_test(name_prompt)
-		room_name = speech.speechrec()
-		utils.make_room('charu', room_name)
-	if room_members_added:
-		utils.add_members('charu', room_name, )
+            

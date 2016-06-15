@@ -24,7 +24,7 @@ def speech_play_test(voice_output):
      pygame.mixer.music.load("test2.mp3")
 
 def audio_file_remove():
-     audio_file = "test.mp3"
+     audio_file = "test.wav"
      os.remove(audio_file)
      #Cannot remove audio file, have to remove it when entire application close
 
@@ -37,7 +37,6 @@ def speechrec():
         banana = r.recognize_google(audio, language = "en-us", show_all=False)   # recognize speech using Google Speech Recognition
         return banana
     except:                            # speech is unintelligible
-<<<<<<< aca1b3253aecceb58c81993b53841fbae77a62e8
         errormess = "Could not understand audio, please try again"
         speech_play_test(errormess)
         return errormess

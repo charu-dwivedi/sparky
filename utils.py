@@ -125,7 +125,7 @@ def find_members(token, member_input):
         else:
             print "Did you mean one of these? "
             for matched_member in matching_members['items']:
-                print count + ": "+ 
+                print count + ": "
                 print "   " + suggested_member[1]
             num = raw_input("Respond with a number: ")
 
