@@ -9,7 +9,7 @@ def iterate(top, text):
 	while not user_input:
 		user_input = speechtest.speechrec()
 	text.set(user_input)
-	langprocess.process(user_input)
+	langprocess.process(user_input, text)
 	'''
     user_input = 'Can I set up a 	meeting?'
     text.set(text.get() +  '	You: ' + user_input + '\n\n')

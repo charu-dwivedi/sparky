@@ -8,6 +8,7 @@ import pygame
 import os
 import time
 import pyvona
+from winsound import *
 # Open a plain text file for reading.  For this example, assume that
 # the text file contains only ASCII characters.
 
@@ -29,12 +30,13 @@ def audio_file_remove():
      #Cannot remove audio file, have to remove it when entire application close
 
 def speechrec():
-    print "running again"
+    PlaySound('ask.wav', SND_FILENAME)
     r = sr.Recognizer()
     with sr.Microphone() as source:                # use the default microphone as the audio source
         audio = r.listen(source)                   # listen for the first phrase and extract it into audio data
     try:
         banana = r.recognize_google(audio, language = "en-us", show_all=False)   # recognize speech using Google Speech Recognition
+        PlaySound('understood.wav', SND_FILENAME)
         return banana
     except:                            # speech is unintelligible
         errormess = "Could not understand audio, please try again"
