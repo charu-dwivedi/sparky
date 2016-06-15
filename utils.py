@@ -183,7 +183,7 @@ def add_members(user, room_name, room_members):
     add_members_to_room(developer_tokens[user], get_roomid(room_name, developer_tokens[user]), room_members)
 
 # changes an existing room's name and returns the output code (returns None if rooms doesn't exist)
-def update_room_name(user, room_name, new_room_name):
+def rename_room(user, room_name, new_room_name):
     return change_room_name(developer_tokens[user], room_name, new_room_name)
 
 ##########################################
