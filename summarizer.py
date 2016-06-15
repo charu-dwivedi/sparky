@@ -53,7 +53,9 @@ def get_transcript(user, room_name, days_limit=None, hours_limit=None, min_limit
 """
 Use summarize to summarize chat messages in a room with NLP
 """
-def summarize(title, user, room_name, days_limit=None, hours_limit=None, min_limit=None):
+def summarize(user, room_name, days_limit=None, hours_limit=None, min_limit=None, title=None):
+    if title == None:
+        title = '%s Summary' % room_name
     text = compile_messages(user, room_name, days_limit, hours_limit, min_limit)
     tt = TextTeaser()
     return indent_tagged(tt.summarize(title, text), utils.get_emails_with_users(user, room_name).values())
