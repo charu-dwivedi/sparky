@@ -1,10 +1,10 @@
 # NOTE: this requires PyAudio because it uses the Microphone class
+from gtts import gTTS
+import pygame
 import speech_recognition as sr
 import smtplib
-from gtts import gTTS
 # Import the email modules we'll need
 from email.mime.text import MIMEText
-import pygame
 import os
 import time
 import pyvona
@@ -25,7 +25,7 @@ def speech_play_test(voice_output):
      pygame.mixer.music.load("test2.mp3")
 
 def audio_file_remove():
-     audio_file = "test.mp3"
+     audio_file = "test.wav"
      os.remove(audio_file)
      #Cannot remove audio file, have to remove it when entire application close
 
@@ -41,9 +41,7 @@ def speechrec():
     except:                            # speech is unintelligible
         errormess = "Could not understand audio, please try again"
         speech_play_test(errormess)
-#speechrec()
-
-
+        return errormess
 '''
 receiver = "chrchon@cisco.com"
 
