@@ -21,14 +21,15 @@ def process(user_input, text):
 
 
 def create_room_dialog(room_name_added, room_members_added, text, room_name="", room_members=[]):
+    room_id = ""
     if room_name_added:
-        utils.make_room('charu', room_name)
+        room_id = utils.make_room('charu', room_name)
     else:
         name_prompt = "What would you like to name your room?"
         speech.speech_play_test(name_prompt)
         while not room_name:
             room_name = speech.speechrec()
-        utils.make_room('charu', room_name) 
+        room_id = utils.make_room('charu', room_name) 
     if room_members_added:
         utils.add_members('charu', room_name, room_members)
     else:
@@ -49,6 +50,7 @@ def create_room_dialog(room_name_added, room_members_added, text, room_name="", 
             new_members_array = new_members.split()
             print new_members_array
             new_member_email = uvb.find_members_voice('charu', new_members_array, text)
-            utils.add_members('charu', room_name, new_member_email)
+            print new_member_email
+            utils.add_members('charu', room_id, new_member_email)
             added_members_response = "Members have ben added to " + room_name 
             speech.speech_play_test(added_members_response)
