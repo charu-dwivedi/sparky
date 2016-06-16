@@ -60,6 +60,6 @@ def summarize(user, room_name, days_limit=None, hours_limit=None, min_limit=None
     tt = TextTeaser()
     return indent_tagged(tt.summarize(title, text), utils.get_emails_with_users(user, room_name).values())
 
-# print summarize('ping pong', 'chris', 'Ping Pong SJ-29', 6)
-# print summarize('cool title', 'chris', 'Hacker Squad', None, 8)
+# print summarize('chris', 'Ping Pong SJ-29', 6)
+print summarize('chris', 'Hacker Squad', None, 8)
 # print get_transcript('chris', 'Hacker Squad', None, 8)

@@ -100,6 +100,7 @@ def check_suggested_members(member_name):
     else:
         return 0
 
+# not finished
 def find_members(token, member_input):
     final_member_list = []
     legit_token = "Bearer " + token
@@ -128,6 +129,32 @@ def find_members(token, member_input):
                 print count + ": "+ matched_member
             num = raw_input("Respond with a number: ")
     return final_member_list
+
+def find_lastname(token, member):
+    lastnames = []
+    headers = {
+        'Authorization': legit_token
+    }
+    params = {
+        'displayName': member
+    }
+    matching_members = requests.get(search_url, headers=headers, params=params).json()
+    if len(matching_members['items']) == 0:
+        print "No matching members"
+    elif len(matching_members['items']) == 1:
+        lastnames.append(matching_members['items'][0]['email'])
+    elif len(matching_members['items']) > 5:
+        found_member = check_suggested_members((member.split())[0])
+        if found_member == 0:
+            print "Please specify " + member + " a bit more"
+        else:
+            lastnames.append(found_member)
+    else:
+        print "Did you mean one of these? "
+        for matched_member in matching_members['items']:
+            print count + ": "+ matched_member
+        num = raw_input("Respond with a number: ")
+    return lastnames
 
 def create_room(token, room_name):
     legit_token = "Bearer " + token
@@ -184,6 +211,7 @@ def change_room_name(token, old_name, new_name):
     print 'Room \'%s\' could not be found' % old_name
     print 'No room updated'
     return None
+    
 """
 Use these functions
 """
@@ -232,7 +260,6 @@ def rename_room(user, room_name, new_room_name):
 
 def search_members(user, member_input):
     return find_members(developer_tokens[user], member_input)
-
 
 ##########################################
 
