@@ -13,7 +13,7 @@ delete_room_keywords = ["delete"]
 add_members_keywords = ["with", "add"]
 schedule_meeting_keywords = ["schedule", "meeting", "follow up", "set up"]
 change_room_name_keywords = ["change", "name", "rename"]
-summarizer_keywords = ["summarize"]
+summarizer_keywords = ["summarize", "summarized", "sunrise"] # lol
 transcript_keywords =["transcript", "transcribe"]
 
 """
@@ -45,7 +45,7 @@ def process(user_input):
         translate_to_commands('charu', user_input)
     except Exception as e:
         print 'Not summarize or transcript'
-        
+
     for words in create_room_keywords:
         if words in user_input.lower():
             room_name_true = False
