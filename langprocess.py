@@ -37,13 +37,7 @@ def translate_to_commands(user, user_input):
                 return summarizer.get_transcript(user, processed[0], processed[1], processed[2], processed[3])
 
 def process(user_input):
-    create_room_keywords = ["create", "make"]
-    name_room_keywords = "called"
-    delete_room_keywords = ["delete"]
-    add_members_keywords = ["with", "add"]
-    schedule_meeting_keywords = ["schedule", "meeting", "follow up", "set up"]
-    change_room_name_keywords = ["change", "name", "rename"]
-    summarizer_keywords = ["summarize"]
+    translate_to_commands('charu', user_input)
     for words in create_room_keywords:
         if words in user_input.lower():
             room_name_true = False
