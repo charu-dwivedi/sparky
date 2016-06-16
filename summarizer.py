@@ -61,5 +61,5 @@ def summarize(user, room_name, days_limit=None, hours_limit=None, min_limit=None
     return indent_tagged(tt.summarize(title, text), utils.get_emails_with_users(user, room_name).values())
 
 # print summarize('chris', 'Ping Pong SJ-29', 6)
-print summarize('chris', 'Hacker Squad', None, 8)
+print summarize('chris', 'Golden Eagles')
 # print get_transcript('chris', 'Hacker Squad', None, 8)
