@@ -251,7 +251,7 @@ def process(user_input):
         with open('summary.txt', 'w') as f:
             f.write(translate_to_commands('charu', user_input.lower().split()))
     except Exception as e:
-        print 'Not summarize or transcript'
+        print 'Not written to text'
     else:
         print translate_to_commands('charu', user_input.lower().split())
     finally:
@@ -277,5 +277,5 @@ def process(user_input):
 Test calls
 """
 # process('konichiwa charu-sama summarize hacker next week tanananay')
-process('konichiwa charu-sama summarize hacker 2 days from now tanananay')
+# process('konichiwa charu-sama summarize hacker 2 days from now tanananay')
 # process('chris', 'chris tanay beast beast transcript Ping Pong SJ-29 peanut')
