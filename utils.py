@@ -37,7 +37,7 @@ def get_email_user(token, room_id):
     users_json = requests.get(url, headers=headers, params=params).json()
     email_to_user = {}
     for user in users_json['items']:
-        email_to_user[user['personEmail']].lower() = user['personDisplayName'].lower()
+        email_to_user[user['personEmail']] = user['personDisplayName']
     return email_to_user
 
 def get_messages(token, room_id, before=None, before_msg=None, max_msgs=float('inf')):

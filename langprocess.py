@@ -1,10 +1,10 @@
 #! /usr/bin/env python2
 import utils
-import speechtest as speech
-import utilsvoiceblend as uvb
+# import speechtest as speech
+# import utilsvoiceblend as uvb
 import summarizer
 from Tkinter import StringVar
-import meeting_scheduler as ms
+# import meeting_scheduler as ms
 
 
 create_room_keywords = ["create", "make", "room"]
@@ -34,15 +34,15 @@ def translate_to_commands(user, user_input):
         if input_word in summarizer_keywords:
             processed = process_for_summarize(user, user_input, i)
             if processed != None:
-                return summarizer.summarize(user, 100, processed[0], processed[1], processed[2], processed[3], processed[4])
+                return summarizer.summarize(user, processed[0], 100, processed[1], processed[2], processed[3], processed[4])
         if input_word in transcript_keywords:
             processed = process_for_transcript(user, user_input, i)
             if processed != None:
-                return summarizer.get_transcript(user, 300, processed[0], processed[1], processed[2], processed[3])
+                return summarizer.get_transcript(user, processed[0], 300, processed[1], processed[2], processed[3])
 
 def process(user_input):
     try:
-        translate_to_commands('charu', user_input)
+        print translate_to_commands('charu', user_input.lower().split())
     except Exception as e:
         print 'Not summarize or transcript'
 
@@ -209,3 +209,6 @@ def schedule_meeting_dialog(start, end, attendees=[]):
         for attendee in attendees:
             users += utils.find_members(utils.developer_tokens['tanay'], attendee)
         ms.schedule(users, start, end)
+
+# command = 'summarize golden eagles'
+# process(command)
