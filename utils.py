@@ -112,7 +112,6 @@ def find_members(token, member_input):
             'displayName': member
         }
         matching_members = requests.get(search_url, headers=headers, params=params).json()
-        return matching_members
         if len(matching_members['items']) == 0:
             print "No matching members"
         elif len(matching_members['items']) == 1:
@@ -233,6 +232,8 @@ def rename_room(user, room_name, new_room_name):
 
 def search_members(user, member_input):
     return find_members(developer_tokens[user], member_input)
+
+def get_lastname(user, )
 
 ##########################################
 
