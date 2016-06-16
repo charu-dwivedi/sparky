@@ -212,10 +212,10 @@ def change_room_name(token, old_name, new_name):
 Use these functions
 """
 # returns messages from a room
-def get_messages_for_user(user, room_name):
+def get_messages_for_user(user, room_name, limit):
     if user not in developer_tokens:
         raise Exception("User {} doesn't exist".format(user))
-    return get_messages(developer_tokens[user], get_roomid(room_name, developer_tokens[user]))
+    return get_messages(developer_tokens[user], get_roomid(room_name, developer_tokens[user]), None, None, limit)
 
 # returns users, email tuple in a room
 def get_users_for_room(user, room_name):

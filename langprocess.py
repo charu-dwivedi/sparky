@@ -6,7 +6,7 @@ import summarizer
 from Tkinter import StringVar
 import meeting_scheduler as ms
 
-random_stuff_keywords = ["hello spark", "how are you"]
+
 create_room_keywords = ["create", "make", "room"]
 name_room_keywords = "called"
 delete_room_keywords = ["delete"]
@@ -14,7 +14,7 @@ add_members_keywords = ["with", "add"]
 schedule_meeting_keywords = ["schedule", "meeting", "follow up", "set up"]
 change_room_name_keywords = ["change", "name", "rename"]
 summarizer_keywords = ["summarize"]
-transcript_keywords =["transcript"]
+transcript_keywords =["transcript", "transcribe"]
 
 """
 Internal Functions
@@ -23,6 +23,10 @@ def is_room_name(rooms, room_name, longer_room_name):
     if room_name not in rooms:
         return False
 
+"""
+Function does what process does but for summarize and transcript
+The magic numbers in summarize and get_transcript are arbitrary
+"""
 def translate_to_commands(user, user_input):
     room_name, title = '', ''
     for i in range(len(user_input)):
@@ -30,22 +34,17 @@ def translate_to_commands(user, user_input):
         if input_word in summarizer_keywords:
             processed = process_for_summarize(user, user_input, i)
             if processed != None:
-                return summarizer.summarize(user, processed[0], processed[1], processed[2], processed[3], processed[4])
+                return summarizer.summarize(user, 100, processed[0], processed[1], processed[2], processed[3], processed[4])
         if input_word in transcript_keywords:
             processed = process_for_transcript(user, user_input, i)
             if processed != None:
-                return summarizer.get_transcript(user, processed[0], processed[1], processed[2], processed[3])
+                return summarizer.get_transcript(user, 300, processed[0], processed[1], processed[2], processed[3])
 
 def process(user_input):
-    translate_to_commands('charu', user_input)
-    for words in random_stuff_keywords:
-        if words in user_input.lower():
-            if words == "hello spark":
-                hellospark = "Hello Charu"
-                speech.speech_play_test(hellospark)
-            if words == "how are you":
-                hellospark = "I'm doing well"
-                speech.speech_play_test(hellospark)
+    try
+        translate_to_commands('charu', user_input)
+    except Exception as e:
+        print 'Not summarize or transcript'
     for words in create_room_keywords:
         if words in user_input.lower():
             room_name_true = False
