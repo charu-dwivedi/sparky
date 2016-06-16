@@ -78,9 +78,13 @@ def get_room(room_name, token, max_msgs=float('inf'), room_type=None):
     for room in get_rooms(token, max_msgs, room_type)['items']:
         if room['title'].lower() == room_name.lower():
             return room
+    return None
 
 def get_roomid(room_name, token, max_msgs=float('inf'), room_type=None):
-    return get_room(room_name, token, max_msgs=float('inf'), room_type=None)['id']
+    room = get_room(room_name, token, max_msgs=float('inf'), room_type=None)
+    if not room or 'id' not in room:
+        return None
+    return room['id']
 
 """
 Internal Room Action Commands
@@ -141,19 +145,11 @@ def find_lastname(token, member):
     matching_members = requests.get(search_url, headers=headers, params=params).json()
     if len(matching_members['items']) == 0:
         print "No matching members"
-    elif len(matching_members['items']) == 1:
-        lastnames.append(matching_members['items'][0]['email'])
-    elif len(matching_members['items']) > 5:
-        found_member = check_suggested_members((member.split())[0])
-        if found_member == 0:
-            print "Please specify " + member + " a bit more"
-        else:
-            lastnames.append(found_member)
-    else:
-        print "Did you mean one of these? "
-        for matched_member in matching_members['items']:
-            print count + ": "+ matched_member
-        num = raw_input("Respond with a number: ")
+        return None
+    for m in matching_members['items']:
+        lastnames.append(m['items'][0]['personDisplayName'])
+    if not lastnames:
+        return None
     return lastnames
 
 def create_room(token, room_name):
@@ -211,7 +207,7 @@ def change_room_name(token, old_name, new_name):
     print 'Room \'%s\' could not be found' % old_name
     print 'No room updated'
     return None
-    
+
 """
 Use these functions
 """
