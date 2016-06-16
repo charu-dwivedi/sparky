@@ -99,7 +99,7 @@ def check_suggested_members(member_name):
             return sugg_users[member_name][0][1]
     else:
         return 0
- 
+
 def find_members(token, member_input):
     final_member_list = []
     legit_token = "Bearer " + token
@@ -143,8 +143,8 @@ def create_room(token, room_name):
     room_id = users_json['id']
     return room_id
 
-def delete_room(token, room_id):  
-    legit_token = "Bearer " + token  
+def delete_room(token, room_id):
+    legit_token = "Bearer " + token
     url = 'https://api.ciscospark.com/v1/rooms/'+room_id
     headers = {
         'Authorization': legit_token
@@ -153,7 +153,7 @@ def delete_room(token, room_id):
         'roomId': room_id
     }
     delete_output_code = requests.delete(url, headers=headers, params=params)
-    return delete_output_code   
+    return delete_output_code
 
 def add_members_to_room(token, room_id, member_input):
     legit_token = "Bearer " + token

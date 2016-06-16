@@ -4,6 +4,8 @@ import speechtest as speech
 import utilsvoiceblend as uvb
 import summarizer
 from Tkinter import StringVar
+import meeting_scheduler as ms
+
 
 create_room_keywords = ["create", "make", "room"]
 name_room_keywords = ["called"]
@@ -34,6 +36,21 @@ def translate_to_commands(user, user_input):
             if processed != None:
                 return summarizer.get_transcript(user, processed[0], processed[1], processed[2], processed[3])
 
+def process(user_input):
+    create_room_keywords = ["create"]
+    name_room_keywords = ["called"]
+    delete_room_keywords = ["delete"]
+    add_members_keywords = ["with", "add"]
+    schedule_meeting_keywords = ["schedule", "meeting", "follow up", "set up"]
+    change_room_name_keywords = ["change", "name", "rename"]
+    summarizer_keywords = ["summarize"]
+    for words in create_room_keywords:
+        if words in user_input.lower():
+            create_room_dialog(False, False)
+    for words in schedule_meeting_keywords:
+        if words in user_input.lower():
+            return schedule_meeting_dialog("2016-08-10T13:00:00","2016-08-10T14:00:00")
+
 # returns a (room_name, days_limit, hours_limit, minutes_limit)
 def process_for_transcript(user, user_input, i):
     rooms = utils.get_all_rooms(user)
@@ -62,7 +79,7 @@ def process_for_transcript(user, user_input, i):
                     i2 = j + 1
                     room_name = potential_room_name
                     return (room_name, None, None, None)
-   
+
     days_limit, hours_limit, minutes_limit = None, None, None
     return (room_name, days_limit, hours_limit, minutes_limit)
 
@@ -114,7 +131,7 @@ def create_room_dialog(room_name_added, room_members_added, text, room_name="", 
         speech.speech_play_test(name_prompt)
         while not room_name:
             room_name = speech.speechrec()
-        room_id = utils.make_room('charu', room_name) 
+        room_id = utils.make_room('charu', room_name)
     if room_members_added:
         utils.add_members('charu', room_name, room_members)
     else:
@@ -137,20 +154,20 @@ def create_room_dialog(room_name_added, room_members_added, text, room_name="", 
             new_member_email = uvb.find_members_voice('charu', new_members_array, text)
             print new_member_email
             utils.add_members_with_room_id('charu', room_id, new_member_email)
-            added_members_response = "Members have ben added to " + room_name 
+            added_members_response = "Members have ben added to " + room_name
             speech.speech_play_test(added_members_response)
 
-"""
-Call process to use langprocess
-"""
-def process(user, user_input, text):
-    room_caller = 0
-    for words in create_room_keywords:
-        if words in user_input.lower():
-            room_caller += 1 
-    if room_caller == 2:
-        create_room_dialog(False, False, user_input)
-    print user_input.lower()
-    print translate_to_commands(user, user_input.lower().split())
 
 # process('chris', 'chris tanay beast beast transcript Ping Pong SJ-29 peanut')
+
+def schedule_meeting_dialog(start, end, attendees=[]):
+    # users = [("Tanay Nathan", "tanathan@cisco.com")]
+    speech.speech_play_test("What room would you like to invite?")
+    if len(attendees) == 0:
+        ms.schedule(users, start, end)
+        speech.speech_play_test("Ok, created meeting.")
+        return "Ok, created meeting."
+    else:
+        for attendee in attendees:
+            users += utils.find_members(utils.developer_tokens['tanay'], attendee)
+        ms.schedule(users, start, end)
