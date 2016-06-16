@@ -1,10 +1,10 @@
 #! /usr/bin/env python2
 import utils
-# import speechtest as speech
-# import utilsvoiceblend as uvb
+import speechtest as speech
+import utilsvoiceblend as uvb
 import summarizer
 from Tkinter import StringVar
-# import meeting_scheduler as ms
+import meeting_scheduler as ms
 
 
 create_room_keywords = ["create", "make", "room"]
@@ -45,6 +45,10 @@ def process(user_input):
         with open('summary.txt', 'w') as f:
             f.write(translate_to_commands('charu', user_input.lower().split()))
     except Exception as e:
+        print 'Not summarize or transcript'
+    else:
+        print translate_to_commands('charu', user_input.lower().split())
+    finally:
         print 'Not summarize or transcript'
 
     for words in create_room_keywords:
@@ -211,5 +215,5 @@ def schedule_meeting_dialog(start, end, attendees=[]):
             users += utils.find_members(utils.developer_tokens['tanay'], attendee)
         ms.schedule(users, start, end)
 
-command = 'summarize golden eagles'
+command = 'konichiwa charu-sama summarize hacker tanananay'
 process(command)
