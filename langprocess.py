@@ -41,10 +41,11 @@ def translate_to_commands(user, user_input):
                 return summarizer.get_transcript(user, 300, processed[0], processed[1], processed[2], processed[3])
 
 def process(user_input):
-    try
+    try:
         translate_to_commands('charu', user_input)
     except Exception as e:
         print 'Not summarize or transcript'
+        
     for words in create_room_keywords:
         if words in user_input.lower():
             room_name_true = False
