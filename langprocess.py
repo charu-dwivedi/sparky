@@ -42,7 +42,8 @@ def translate_to_commands(user, user_input):
 
 def process(user_input):
     try:
-        print translate_to_commands('charu', user_input.lower().split())
+        with open('summary.txt', 'w') as f:
+            f.write(translate_to_commands('charu', user_input.lower().split()))
     except Exception as e:
         print 'Not summarize or transcript'
 
@@ -210,5 +211,5 @@ def schedule_meeting_dialog(start, end, attendees=[]):
             users += utils.find_members(utils.developer_tokens['tanay'], attendee)
         ms.schedule(users, start, end)
 
-# command = 'summarize golden eagles'
-# process(command)
+command = 'summarize golden eagles'
+process(command)
