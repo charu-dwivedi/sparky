@@ -149,8 +149,8 @@ def process(user, user_input, text):
         if words in user_input.lower():
             room_caller += 1 
     if room_caller == 2:
-        create_room_dialog(False, False, text)
-    print user_input
-    print translate_to_commands(user, user_input.split())
+        create_room_dialog(False, False, user_input)
+    print user_input.lower()
+    print translate_to_commands(user, user_input.lower().split())
 
 # process('chris', 'chris tanay beast beast transcript Ping Pong SJ-29 peanut')

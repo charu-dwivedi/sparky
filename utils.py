@@ -76,7 +76,7 @@ def get_rooms(token, max_rooms=float('inf'), room_type=None):
 
 def get_room(room_name, token, max_msgs=float('inf'), room_type=None):
     for room in get_rooms(token, max_msgs, room_type)['items']:
-        if room['title'] == room_name:
+        if room['title'].lower() == room_name.lower():
             return room
 
 def get_roomid(room_name, token, max_msgs=float('inf'), room_type=None):
@@ -172,7 +172,7 @@ def change_room_name(token, old_name, new_name):
     legit_token = "Bearer " + token
     rooms = get_rooms(token)['items']
     for r in rooms:
-        if r['title'] == old_name:
+        if r['title'].lower() == old_name.lower():
             update_url = 'https://api.ciscospark.com/v1/rooms/%s' % r['id']
             headers = {
                 'Accept': 'application/json',
@@ -209,7 +209,7 @@ def get_emails_with_users(user, room_name):
 def get_all_rooms(user, max_rooms=float('inf'), room_type=None):
     rooms = []
     for r in get_rooms(developer_tokens[user], max_rooms, room_type)['items']:
-        rooms.append(r['title'])
+        rooms.append(r['title'].lower())
     return rooms
 
 # creates room and returns id of newly created room

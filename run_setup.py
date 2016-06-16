@@ -31,5 +31,4 @@ def load_users_and_groups():
     with open('suggested_users.json', 'w') as fp:
         json.dump(user_names, fp, sort_keys=True, indent=4) 
 
-
 load_users_and_groups()

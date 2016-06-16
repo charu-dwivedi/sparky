@@ -42,6 +42,10 @@ def speechrec():
         errormess = "Could not understand audio, please try again"
         speech_play_test(errormess)
         return errormess
+
+
+
+        
 '''
 receiver = "chrchon@cisco.com"
 
