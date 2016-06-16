@@ -257,8 +257,9 @@ def rename_room(user, room_name, new_room_name):
 def search_members(user, member_input):
     return find_members(developer_tokens[user], member_input)
 
-##########################################
-
+"""
+Test Calls
+"""
 # users = get_users(developer_tokens['tanay'], 'Y2lzY29zcGFyazovL3VzL1JPT00vYjhhMmFhYjAtMmU5Mi0xMWU2LTg0YWEtNWY1MGViMDZhMjAx')
 # print get_messages(developer_tokens['tanay'], 'Y2lzY29zcGFyazovL3VzL1JPT00vYjhhMmFhYjAtMmU5Mi0xMWU2LTg0YWEtNWY1MGViMDZhMjAx')
 # print get_roomid('Hacker Squad', developer_tokens['chris'])

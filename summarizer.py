@@ -78,6 +78,9 @@ def summarize(user, room_name, msg_limit=None, days_limit=None, hours_limit=None
     tt = TextTeaser()
     return indent_tagged(tt.summarize(title, text), utils.get_emails_with_users(user, room_name).values())
 
+"""
+Test Calls"
+"""
 # print summarize('chris', 'Ping Pong SJ-29', 6)
 # print summarize('chris', 'Golden Eagles', 100)
 # print get_transcript('chris', 'Codefest Spark Voice Assistant')
