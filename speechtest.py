@@ -7,8 +7,10 @@ import smtplib
 from email.mime.text import MIMEText
 import os
 import time
-import pyvona
+import pyaudio
+import wave
 from winsound import *
+
 # Open a plain text file for reading.  For this example, assume that
 # the text file contains only ASCII characters.
 
@@ -30,51 +32,38 @@ def audio_file_remove():
      #Cannot remove audio file, have to remove it when entire application close
 
 def speechrec():
-    PlaySound('ask.wav', SND_FILENAME)
+    playWav('ask.wav')
     r = sr.Recognizer()
     with sr.Microphone() as source:                # use the default microphone as the audio source
         audio = r.listen(source)                   # listen for the first phrase and extract it into audio data
     try:
         banana = r.recognize_google(audio, language = "en-us", show_all=False)   # recognize speech using Google Speech Recognition
-        PlaySound('understood.wav', SND_FILENAME)
+        playWav('understood.wav')
         return banana
     except:                            # speech is unintelligible
         errormess = "Could not understand audio, please try again"
         speech_play_test(errormess)
         return errormess
 
+def playWav(wavename):
+    chunk = 1024
+    f = wave.open(wavename, "rb")
+    p = pyaudio.PyAudio()
+    stream = p.open(format = p.get_format_from_width(f.getsampwidth()),  
+                channels = f.getnchannels(),  
+                rate = f.getframerate(),  
+                output = True)  
+    #read data  
+    data = f.readframes(chunk)  
 
+    #paly stream  
+    while data != '':  
+        stream.write(data)  
+        data = f.readframes(chunk)  
 
-        
-'''
-receiver = "chrchon@cisco.com"
+    #stop stream  
+    stream.stop_stream()  
+    stream.close()  
 
-# me == the sender's email address
-# you == the recipient's email address
-print "Who would you like to send an email to?"
-person = speechrec()
-chrisname = "Chris"
-if chrisname.lower() in person:
-    receiver = "chrchon@cisco.com"
-    print "Sending to Chris"
-
-print "What would you like in the message?"
-message_body = speechrec()
-
-
-
-msg = MIMEText(message_body)
-
-msg['Subject'] = message_body
-msg['From'] = "chdwived@cisco.com"
-msg['To'] = receiver
-
-
-
-
-# Send the message via our own SMTP server, but don't include the
-# envelope header.
-s = smtplib.SMTP('localhost')
-s.sendmail("chdwived@cisco.com", receiver, msg.as_string())
-s.quit()
-'''
+    #close PyAudio  
+    p.terminate()  

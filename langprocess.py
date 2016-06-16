@@ -6,7 +6,7 @@ import summarizer
 from Tkinter import StringVar
 import meeting_scheduler as ms
 
-
+random_stuff_keywords = ["hello spark", "how are you"]
 create_room_keywords = ["create", "make", "room"]
 name_room_keywords = "called"
 delete_room_keywords = ["delete"]
@@ -38,6 +38,14 @@ def translate_to_commands(user, user_input):
 
 def process(user_input):
     translate_to_commands('charu', user_input)
+    for words in random_stuff_keywords:
+        if words in user_input.lower():
+            if words == "hello spark":
+                hellospark = "Hello Charu"
+                speech.speech_play_test(hellospark)
+            if words == "how are you":
+                hellospark = "I'm doing well"
+                speech.speech_play_test(hellospark)
     for words in create_room_keywords:
         if words in user_input.lower():
             room_name_true = False
