@@ -8,7 +8,7 @@ import meeting_scheduler as ms
 
 
 create_room_keywords = ["create", "make", "room"]
-name_room_keywords = ["called"]
+name_room_keywords = "called"
 delete_room_keywords = ["delete"]
 add_members_keywords = ["with", "add"]
 schedule_meeting_keywords = ["schedule", "meeting", "follow up", "set up"]
@@ -37,8 +37,8 @@ def translate_to_commands(user, user_input):
                 return summarizer.get_transcript(user, processed[0], processed[1], processed[2], processed[3])
 
 def process(user_input):
-    create_room_keywords = ["create"]
-    name_room_keywords = ["called"]
+    create_room_keywords = ["create", "make"]
+    name_room_keywords = "called"
     delete_room_keywords = ["delete"]
     add_members_keywords = ["with", "add"]
     schedule_meeting_keywords = ["schedule", "meeting", "follow up", "set up"]
@@ -46,10 +46,43 @@ def process(user_input):
     summarizer_keywords = ["summarize"]
     for words in create_room_keywords:
         if words in user_input.lower():
-            create_room_dialog(False, False)
+            room_name_true = False
+            room_name = check_name_room_true(user_input)
+            added_members_true = False
+            added_members = check_add_members_true(user_input)
+            if room_name:
+                room_name_true = True
+            if added_members:
+                added_members_true = True
+            create_room_dialog(room_name_true, added_members_true, room_name, added_members)
+            break
     for words in schedule_meeting_keywords:
         if words in user_input.lower():
             return schedule_meeting_dialog("2016-08-10T13:00:00","2016-08-10T14:00:00")
+
+
+def check_name_room_true(user_input):
+    input_arr = (user_input.lower()).split()
+    for x in range(len(input_arr)):
+        if name_room_keywords == input_arr[x]:
+            if x < (len(input_arr)-1):
+                return input_arr[x+1]
+    return
+
+def check_add_members_true(user_input):
+    member_arr = []
+    input_arr = (user_input.lower()).split()
+    not_lower_case_input_arr = user_input.split()
+    for keyword in add_members_keywords:
+        for x in range(len(input_arr)):
+            if keyword == input_arr[x]:
+                for y in range(x+1, len(input_arr)):
+                    if not (not_lower_case_input_arr[y] == "and"):
+                        if (not_lower_case_input_arr[y] == "called"):
+                            return member_arr
+                        member_arr.append(not_lower_case_input_arr[y])
+                        print member_arr
+                return member_arr
 
 # returns a (room_name, days_limit, hours_limit, minutes_limit)
 def process_for_transcript(user, user_input, i):
@@ -122,7 +155,7 @@ def process_for_summarize(user, user_input, i):
     days_limit, hours_limit, minutes_limit = None, None, None
     return (room_name, days_limit, hours_limit, minutes_limit, title)
 
-def create_room_dialog(room_name_added, room_members_added, text, room_name="", room_members=[]):
+def create_room_dialog(room_name_added, room_members_added, room_name="", room_members=[]):
     room_id = ""
     if room_name_added:
         room_id = utils.make_room('charu', room_name)
@@ -133,7 +166,10 @@ def create_room_dialog(room_name_added, room_members_added, text, room_name="", 
             room_name = speech.speechrec()
         room_id = utils.make_room('charu', room_name)
     if room_members_added:
-        utils.add_members('charu', room_name, room_members)
+        new_member_email = uvb.find_members_voice('charu', room_members)
+        utils.add_members_with_room_id('charu', room_id, new_member_email)
+        added_response = "Ok, " + room_name + "has been created with members"
+        speech.speech_play_test(added_response)
     else:
         ask_add_members = "Would you like to add members?"
         speech.speech_play_test(ask_add_members)
@@ -151,7 +187,7 @@ def create_room_dialog(room_name_added, room_members_added, text, room_name="", 
                 new_members = speech.speechrec()
             new_members_array = new_members.split()
             print new_members_array
-            new_member_email = uvb.find_members_voice('charu', new_members_array, text)
+            new_member_email = uvb.find_members_voice('charu', new_members_array)
             print new_member_email
             utils.add_members_with_room_id('charu', room_id, new_member_email)
             added_members_response = "Members have ben added to " + room_name

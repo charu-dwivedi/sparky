@@ -3,12 +3,14 @@ import speechtest as speech
 
 class AudioUI:
     class __AudioUI:
-        def __init__(self, text, top):
+        def __init__(self, top, text):
             self.text = text
             self.top = top
 
         def __update(self, s):
-            self.text.set(self.text.get() + s)
+            self.clear()
+            got_text = self.text.get()
+            self.text.set(got_text + s)
             self.top.update_idletasks()
 
         def clear(self):

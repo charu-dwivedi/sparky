@@ -112,7 +112,6 @@ def find_members(token, member_input):
             'displayName': member
         }
         matching_members = requests.get(search_url, headers=headers, params=params).json()
-        return matching_members
         if len(matching_members['items']) == 0:
             print "No matching members"
         elif len(matching_members['items']) == 1:

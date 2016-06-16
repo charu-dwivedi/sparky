@@ -17,4 +17,4 @@ def iterate(top, text):
     audio_ui = aui.AudioUI(top,text)
     user_input = audio_ui.listen()
     sparky_output = langprocess.process(user_input)
-    audio_ui.respond(sparky_output)
+#    audio_ui.respond(sparky_output)

@@ -22,10 +22,10 @@ def speech_play_test(voice_output):
      while pygame.mixer.music.get_busy() == True:
          continue
      pygame.mixer.music.stop()
-     # pygame.mixer.music.load("test2.mp3")
+     pygame.mixer.music.load("test2.mp3")
 
 def audio_file_remove():
-     audio_file = "test.wav"
+     audio_file = "test.mp3"
      os.remove(audio_file)
      #Cannot remove audio file, have to remove it when entire application close
 

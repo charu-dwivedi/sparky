@@ -9,7 +9,7 @@ with open('developer_tokens.json') as data:
 with open('suggested_users.json') as sugg:
     sugg_users = json.load(sugg)
 
-def check_suggested_members_voice(member_name, text):
+def check_suggested_members_voice(member_name):
     if member_name in sugg_users:
         if (len(sugg_users[member_name])>1):
             did_you_mean = "Select which user you want by number:"
@@ -26,7 +26,7 @@ def check_suggested_members_voice(member_name, text):
         return 0
 
 
-def find_members_voice(user, member_input, text):
+def find_members_voice(user, member_input):
     finding_members = "Finding members"
     speech.speech_play_test(finding_members)
     final_member_list = []
@@ -46,7 +46,7 @@ def find_members_voice(user, member_input, text):
         elif len(matching_members['items']) == 1:
             final_member_list.append(matching_members['items'][0]['email'])
         elif len(matching_members['items']) > 5:
-            found_member = check_suggested_members_voice((member.split())[0], text)
+            found_member = check_suggested_members_voice((member.split())[0])
             if found_member == 0:
                 specify_member = "Please specify " + member + "a bit more"
                 speech.speech_play_test(member)
