@@ -19,6 +19,7 @@ def iterate(top, text):
     text.set('')
     while not user_input:
     	user_input = speech.speechrec()
+    print user_input
     text.set(user_input)
     top.update_idletasks()
     sparky_output = langprocess.process(user_input, text, top)

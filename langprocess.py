@@ -5,6 +5,7 @@ import utilsvoiceblend as uvb
 import summarizer
 from Tkinter import StringVar
 import meeting_scheduler as ms
+from dateutil import parser
 
 random_keywords = ["hello spark", "how are you", 'hi spark']
 create_room_keywords = ["create", "make", "room"]
@@ -53,6 +54,12 @@ def get_room_name(user_input, rooms, i):
             else:
                 return (potential_room_name, j+1)
     return None
+
+def get_date(user_input):
+    try:
+        return parser.parse(user_input, fuzzy=True).strftime('%Y-%m-%dT%H:%M:%S')
+    except ValueError:
+        return None
 
 # looks for time in user_input starting from index i
 def get_time(user_input, i):
@@ -219,7 +226,7 @@ def process(user_input, text, top, user='charu'):
             break
     for words in schedule_meeting_keywords:
         if words in user_input.lower():
-            return schedule_meeting_dialog("2016-08-10T13:00:00","2016-08-10T14:00:00", text, top)
+            return schedule_meeting_dialog(text, top)
 
 
 def check_name_room_true(user_input):
@@ -294,7 +301,7 @@ def create_room_dialog(room_name_added, room_members_added, text, top, room_name
 
 # process('chris', 'chris tanay beast beast transcript Ping Pong SJ-29 peanut')
 
-def schedule_meeting_dialog(start, end, text, top, attendees=[]):
+def schedule_meeting_dialog(text, top, attendees=[]):
     users = [("Charu Dwivedi", "chdwived@cisco.com")]
     ask_when_meeting ="When would you like to schedule the meeting?"
     speech.speech_play_test(ask_when_meeting)
@@ -302,6 +309,12 @@ def schedule_meeting_dialog(start, end, text, top, attendees=[]):
     while not when_resp:
         when_resp = speech.speechrec()
     text.set(when_resp)
+    start = get_date(when_resp)
+    if start is None:
+        start = '2016-08-10T13:00:00'
+    end = start[:11] + "%02d" % ((int(start[11:13])+1) % 24) + start[13:]
+    print start
+    print end
     ask_add_members = "Would you like to add members?"
     speech.speech_play_test(ask_add_members)
     resp = ""
@@ -334,5 +347,13 @@ def schedule_meeting_dialog(start, end, text, top, attendees=[]):
         speech.speech_play_test("Created meeting.")
         return "Ok, created meeting."
 
+'''
+Test Commands
+'''
 #command = 'konichiwa charu-sama summarize hacker tanananay'
-#process(command)
+#process(command)   
+#''''''''''''''''''''''''''''''
+# now = get_date(' june 18th at 6:50am')
+# print now
+# end = now[:11] + "%02d" % ((int(now[11:13])+1) % 12) + now[13:]
+# print end
