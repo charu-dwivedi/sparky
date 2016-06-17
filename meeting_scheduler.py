@@ -12,14 +12,14 @@ http_auth = credentials.authorize(Http())
 
 service = build('calendar', 'v3', http=http_auth)
 
-def schedule(users, start, end):
+def schedule(users, start, end, title):
     attendees = []
     for user in users:
         attendees.append({
             "email": user[1]
         })
     data = {
-        "summary": "Followup Meeting",
+        "summary": title,
         "description": "Let's reconvene to discuss this further.",
         "start": {
             "dateTime": start,

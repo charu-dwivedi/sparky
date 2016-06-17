@@ -4,7 +4,7 @@ import utils
 import json
 from collections import defaultdict
 
-#Should run this when application opens to create all required files
+# Should run this when application opens to create all required files
 
 with open('developer_tokens.json') as data:
     developer_tokens = json.load(data)

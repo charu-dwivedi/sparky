@@ -1,6 +1,10 @@
 from Tkinter import StringVar
 import speechtest as speech
 
+"""
+In development
+Don't use yet
+"""
 class AudioUI:
     class __AudioUI:
         def __init__(self, top, text):
@@ -41,3 +45,4 @@ class AudioUI:
             AudioUI.instance.text = text
     def __getattr__(self, name):
         return getattr(self.instance, name)
+        
