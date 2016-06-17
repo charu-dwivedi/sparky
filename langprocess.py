@@ -8,21 +8,18 @@ import meeting_scheduler as ms
 
 
 create_room_keywords = ["create", "make", "room"]
-name_room_keywords = "called"
+name_room_keywords = ["called"]
 delete_room_keywords = ["delete"]
 add_members_keywords = ["with", "add"]
 schedule_meeting_keywords = ["schedule", "meeting", "follow up", "set up"]
-change_room_name_keywords = ["change", "name", "rename"]
+rename_room_keywords = ["change", "name", "rename", 'reading'] #lol
+rename_room_transition_keywords = ['as', 'to']
 summarizer_keywords = ["summarize", "summarized", "sunrise"] # lol
-transcript_keywords =["transcript", "transcribe"]
+transcript_keywords = ["transcript", "transcribe"]
 
 """
 Internal Functions
 """
-def is_room_name(rooms, room_name, longer_room_name):
-    if room_name not in rooms:
-        return False
-
 def isInt(stringInt):
     try: 
         int(stringInt)
@@ -30,11 +27,41 @@ def isInt(stringInt):
     except ValueError:
         return False
 
-def get_days(user_input, index):
+# tries to find a room name building from index i
+# returns None if fails
+def get_room_name(user_input, rooms, i):
+    if i >= len(user_input):
+        return None
+
+    potential_room_name = user_input[i]
+    if potential_room_name in rooms:
+        if i + 1 < len(user_input):
+            longer_potential_room_name = potential_room_name + ' ' + user_input[i+1]
+            if longer_potential_room_name not in rooms:
+                return (potential_room_name, i+1)
+        else:
+            return (potential_room_name, i+1)
+
+    for j in range(i+1, len(user_input)):
+        potential_room_name += ' ' + user_input[j]
+        if potential_room_name in rooms:
+            if j + 1 < len(user_input):
+                longer_potential_room_name = potential_room_name + ' ' + user_input[j+1]
+                if longer_potential_room_name not in rooms:
+                    return (potential_room_name, j+1)
+            else:
+                return (potential_room_name, j+1)
+    return None
+
+# looks for time in user_input starting from index i
+def get_time(user_input, i):
+    if i >= len(user_input):
+        return None
+
     days_limit, hours_limit, minutes_limit = None, None, None
     time, unit = -1, None
     potential = ''
-    for j in range(index, len(user_input)):
+    for j in range(i, len(user_input)):
         word = user_input[j]
         if word == 'yesterday':
             time, unit = 1, 'day'
@@ -80,79 +107,41 @@ def translate_to_commands(user, user_input):
     """
     Function does what process does but for summarize and transcript
     The magic numbers in summarize and get_transcript are arbitrary
+    max messages we get--we do this b/c if not specified, the Spark API
+    assumes a limit of 50
     """
-    room_name, title = '', ''
     for i in range(len(user_input)):
         input_word = user_input[i]
         if input_word in summarizer_keywords:
-            processed = process_for_summarize(user, user_input, i)
-            if processed != None:
+            processed = get_room_name_and_time_limits(user, user_input, i+1)
+            if processed is not None:
+                print 'Summarized ' + str(processed)
                 return summarizer.summarize(user, processed[0], 100, processed[1], processed[2], processed[3])
         if input_word in transcript_keywords:
-            processed = process_for_transcript(user, user_input, i)
-            if processed != None:
-                return summarizer.get_transcript(user, processed[0], 300, processed[1], processed[2], processed[3])
+            processed = get_room_name_and_time_limits(user, user_input, i+1)
+            if processed is not None:
+                print 'Transcript ' + str(processed)
+                return summarizer.get_transcript(user, processed[0], 500, processed[1], processed[2], processed[3])
+        if input_word in rename_room_keywords:
+            processed = process_for_rename_room(user, user_input, i+1)
+            if processed is not None:
+                print 'Rename ' + str(processed)
+                utils.rename_room(user, processed[0], processed[1])
+                return True
+    return False
 
 # returns a (room_name, days_limit, hours_limit, minutes_limit)
-def process_for_transcript(user, user_input, i):
-    rooms = utils.get_all_rooms(user)
-    room_name, potential_room_name, i2, = '', user_input[i+1], i
-    if potential_room_name in rooms:
-        if i + 1 < len(user_input):
-            longer_potential_room_name = potential_room_name + user_input[i+1]
-            if longer_potential_room_name not in rooms:
-                i2 = i + 1
-                room_name = potential_room_name
-        else:
-            i2 = i + 1
-            room_name = potential_room_name
-            return (room_name, None, None, None)
-    else:
-        for j in range(i+2, len(user_input)):
-            potential_room_name += ' ' + user_input[j]
-            if potential_room_name in rooms:
-                if j + 1 < len(user_input):
-                    longer_potential_room_name = potential_room_name + user_input[j+1]
-                    if longer_potential_room_name not in rooms:
-                        i2 = j + 1
-                        room_name = potential_room_name
-                        break
-                else:
-                    i2 = j + 1
-                    room_name = potential_room_name
-                    return (room_name, None, None, None)
+def get_room_name_and_time_limits(user, user_input, i):
+    if i >= len(user_input):
+        return None
 
-    days_limit, hours_limit, minutes_limit = get_days(user_input, i2)
-    return (room_name, days_limit, hours_limit, minutes_limit)
+    room_name_and_next_index = get_room_name(user_input, utils.get_all_rooms(user), i)
+    if room_name_and_next_index is None:
+        return None
+    room_name, i2 = room_name_and_next_index
 
-# returns a (room_name, days_limit, hours_limit, minutes_limit, title)
-def process_for_summarize(user, user_input, i):
-    rooms = utils.get_all_rooms(user)
-    room_name, potential_room_name, i2, = '', user_input[i+1], i
-    if potential_room_name in rooms:
-        if i + 1 < len(user_input):
-            longer_potential_room_name = potential_room_name + user_input[i+1]
-            if longer_potential_room_name not in rooms:
-                i2 = i + 1
-                room_name = potential_room_name
-        else:
-            i2 = i + 1
-            room_name = potential_room_name
-            return (room_name, None, None, None, None)
-    else:
-        for j in range(i+2, len(user_input)):
-            potential_room_name += ' ' + user_input[j]
-            if potential_room_name in rooms:
-                if j + 1 < len(user_input):
-                    longer_potential_room_name = potential_room_name + user_input[j+1]
-                    if longer_potential_room_name not in rooms:
-                        i2 = j + 1
-                        room_name = potential_room_name
-                        break
-                else:
-                    i2 = j + 1
-                    room_name = potential_room_name
-                    return (room_name, None, None, None, None)
+    if i2 >= len(user_input):
+        return (room_name, None, None, None)
     """
     # Title doesn't do anything in summarizer
     title = ''
@@ -164,16 +153,34 @@ def process_for_summarize(user, user_input, i):
     if title == '':
         title = None
     """
-    days_limit, hours_limit, minutes_limit = get_days(user_input, i2)
+    days_limit, hours_limit, minutes_limit = get_time(user_input, i2)
     return (room_name, days_limit, hours_limit, minutes_limit)
 
 """
 Room Command Functions
 """
+def process_for_rename_room(user, user_input, i):
+    if i >= len(user_input):
+        return None
+    rooms = utils.get_all_rooms(user)
+    room_name_and_next_index = get_room_name(user_input, rooms, i)
+    if room_name_and_next_index is None:
+        return None
+    room_name, i2 = room_name_and_next_index
+    if i2+1 >= len(user_input) or user_input[i2] not in rename_room_transition_keywords:
+        return None
+    i2 += 1
+    new_room_name = ''
+    while i2 < len(user_input):
+        new_room_name += user_input[i2] + ' '
+        i2 += 1
+    return (room_name, new_room_name.rstrip())
+
 def check_name_room_true(user_input):
     input_arr = (user_input.lower()).split()
     for x in range(len(input_arr)):
-        if name_room_keywords == input_arr[x]:
+        # if input_arr[x] in name_room_keywords:
+        if name_room_keywords[0] == input_arr[x]:
             if x < (len(input_arr)-1):
                 return input_arr[x+1]
     return
@@ -254,9 +261,11 @@ def process(user_input, user='charu'):
     except Exception as e:
         print 'Not summarize or transcript'
     try:
-        with open('summary.txt', 'w') as f:
-            f.write(output)
-        print 'wrote summary'
+        if output:
+            output = output.encode('ascii', 'ignore')
+            with open('summary.txt', 'w') as f:
+                f.write(output)
+            print 'wrote summary'
     except Exception as e:
         print output
 
@@ -283,3 +292,4 @@ Test calls
 # process('konichiwa charu-sama summarize hacker group 2 days ago tanananay')
 # process('konichiwa charu-sama transcribe hacker group 2 days ago tanananay')
 # process('chris tanay beast beast transcript Ping Pong SJ-29 3 days peanut', 'chris')
+# process('filler filler rename hacker to abandoned hacker', 'chris')

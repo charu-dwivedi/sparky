@@ -212,6 +212,7 @@ def change_room_name(token, old_name, new_name):
 Use these functions
 """
 # returns messages from a room
+# The Spark API is buggy--if you don't specify a limit, it's by default 50
 def get_messages_for_user(user, room_name, limit):
     if user not in developer_tokens:
         raise Exception("User {} doesn't exist".format(user))
