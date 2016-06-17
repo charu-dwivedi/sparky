@@ -6,11 +6,14 @@ Voice assistant with the following features:
 
 3. Delete room
 
-4. Add members to the room
+4. Rename a room
 
-5. Chat summaries in a date range
+5. Add members to the room
+
+6. Chat summaries in a date range
 
 Dependencies:
 
 - Google API library
 - Pillow upgrade (pip install -I --no-cache-dir Pillow)
+- Textteaser
