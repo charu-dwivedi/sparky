@@ -1,6 +1,6 @@
 from Tkinter import StringVar
 import time
-import speechtest
+import speechtest as speech
 import langprocess
 import re
 import audio_ui as aui
@@ -15,6 +15,11 @@ def capitalize(s):
 
 def iterate(top, text):
     audio_ui = aui.AudioUI(top,text)
-    user_input = audio_ui.listen()
-    sparky_output = langprocess.process(user_input)
+    user_input = ""
+    text.set('')
+    while not user_input:
+    	user_input = speech.speechrec()
+    text.set(user_input)
+    top.update_idletasks()
+    sparky_output = langprocess.process(user_input, text, top)
 #    audio_ui.respond(sparky_output)

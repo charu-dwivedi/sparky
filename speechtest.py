@@ -43,7 +43,6 @@ def speechrec():
     except:                            # speech is unintelligible
         errormess = "Could not understand audio, please try again"
         speech_play_test(errormess)
-        return errormess
 
 def playWav(wavename):
     chunk = 1024

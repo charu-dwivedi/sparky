@@ -6,16 +6,17 @@ import summarizer
 from Tkinter import StringVar
 import meeting_scheduler as ms
 
-
+random_keywords = ["hello spark", "how are you", 'hi spark']
 create_room_keywords = ["create", "make", "room"]
-name_room_keywords = ["called"]
+name_room_keywords = "called"
 delete_room_keywords = ["delete"]
 add_members_keywords = ["with", "add"]
 schedule_meeting_keywords = ["schedule", "meeting", "follow up", "set up"]
+change_room_name_keywords = ["change", "name", "rename"]
 rename_room_keywords = ["change", "name", "rename", 'reading'] #lol
 rename_room_transition_keywords = ['as', 'to']
 summarizer_keywords = ["summarize", "summarized", "sunrise"] # lol
-transcript_keywords = ["transcript", "transcribe"]
+transcript_keywords =["transcript", "transcribe"]
 
 """
 Internal Functions
@@ -176,11 +177,55 @@ def process_for_rename_room(user, user_input, i):
         i2 += 1
     return (room_name, new_room_name.rstrip())
 
+
+"""
+Main function for langprocess
+Interface between voice and execution of commands 
+"""
+def process(user_input, text, top, user='charu'):
+    for randomkey in random_keywords:
+        if randomkey == user_input.lower():
+            if randomkey == 'hello spark' or randomkey == 'hi spark':
+                text.set(user_input)
+                top.update_idletasks()
+                speech.speech_play_test('hello Charu')
+            elif randomkey == 'how are you':
+                speech.speech_play_test("I'm doing well")
+    output = None
+    try:
+        output = translate_to_commands(user, user_input.lower().split())
+    except Exception as e:
+        print 'Not summarize or transcript'
+    try:
+        if output:
+            output = output.encode('ascii', 'ignore')
+            with open('summary.txt', 'w') as f:
+                f.write(output)
+            speech.speech_play_test("Ok, wrote summary to summary.txt")
+    except Exception as e:
+        print output
+ 
+    for words in create_room_keywords:
+        if words in user_input.lower():
+            room_name_true = False
+            room_name = check_name_room_true(user_input)
+            added_members_true = False
+            added_members = check_add_members_true(user_input)
+            if room_name:
+                room_name_true = True
+            if added_members:
+                added_members_true = True
+            create_room_dialog(room_name_true, added_members_true, text, top, room_name, added_members)
+            break
+    for words in schedule_meeting_keywords:
+        if words in user_input.lower():
+            return schedule_meeting_dialog("2016-08-10T13:00:00","2016-08-10T14:00:00", text, top)
+
+
 def check_name_room_true(user_input):
     input_arr = (user_input.lower()).split()
     for x in range(len(input_arr)):
-        # if input_arr[x] in name_room_keywords:
-        if name_room_keywords[0] == input_arr[x]:
+        if name_room_keywords == input_arr[x]:
             if x < (len(input_arr)-1):
                 return input_arr[x+1]
     return
@@ -200,7 +245,7 @@ def check_add_members_true(user_input):
                         print member_arr
                 return member_arr
 
-def create_room_dialog(room_name_added, room_members_added, room_name="", room_members=[]):
+def create_room_dialog(room_name_added, room_members_added, text, top, room_name="", room_members=[]):
     room_id = ""
     if room_name_added:
         room_id = utils.make_room('charu', room_name)
@@ -209,6 +254,8 @@ def create_room_dialog(room_name_added, room_members_added, room_name="", room_m
         speech.speech_play_test(name_prompt)
         while not room_name:
             room_name = speech.speechrec()
+        text.set(room_name)
+        top.update_idletasks()
         room_id = utils.make_room('charu', room_name)
     if room_members_added:
         new_member_email = uvb.find_members_voice('charu', room_members)
@@ -221,16 +268,22 @@ def create_room_dialog(room_name_added, room_members_added, room_name="", room_m
         resp = ""
         while not resp:
             resp = speech.speechrec()
+        text.set(resp)
+        top.update_idletasks()
         if 'n' in resp.lower():
             no_response = "Ok, " + room_name + "has been created"
             speech.speech_play_test(no_response)
         if 'y' in resp.lower():
             yes_response = "Ok, please name your members"
             speech.speech_play_test(yes_response)
-            new_members = []
+            new_members = ''
             while not new_members:
                 new_members = speech.speechrec()
+            text.set(new_members)
+            top.update_idletasks()
             new_members_array = new_members.split()
+            if 'and' in new_members_array:
+                new_members_array.remove('and')
             print new_members_array
             new_member_email = uvb.find_members_voice('charu', new_members_array)
             print new_member_email
@@ -238,58 +291,48 @@ def create_room_dialog(room_name_added, room_members_added, room_name="", room_m
             added_members_response = "Members have ben added to " + room_name
             speech.speech_play_test(added_members_response)
 
-def schedule_meeting_dialog(start, end, attendees=[]):
-    # users = [("Tanay Nathan", "tanathan@cisco.com")]
-    speech.speech_play_test("What room would you like to invite?")
-    if len(attendees) == 0:
+
+# process('chris', 'chris tanay beast beast transcript Ping Pong SJ-29 peanut')
+
+def schedule_meeting_dialog(start, end, text, top, attendees=[]):
+    users = [("Charu Dwivedi", "chdwived@cisco.com")]
+    ask_when_meeting ="When would you like to schedule the meeting?"
+    speech.speech_play_test(ask_when_meeting)
+    when_resp = ""
+    while not when_resp:
+        when_resp = speech.speechrec()
+    text.set(when_resp)
+    ask_add_members = "Would you like to add members?"
+    speech.speech_play_test(ask_add_members)
+    resp = ""
+    while not resp:
+        resp = speech.speechrec()
+    text.set(resp)
+
+    if 'n' in resp.lower():
+        no_response = "Ok, meeting has been created"
         ms.schedule(users, start, end)
-        speech.speech_play_test("Ok, created meeting.")
+        speech.speech_play_test(no_response)
+    if 'y' in resp.lower():
+        yes_response = "Ok, please name your members"
+        speech.speech_play_test(yes_response)
+        new_members = ''
+        while not new_members:
+            new_members = speech.speechrec()
+        text.set(new_members)
+        new_members_array = new_members.split()
+        if 'and' in new_members_array:
+            new_members_array.remove('and')
+        print new_members_array
+        new_member_email = uvb.find_members_voice('charu', new_members_array)
+        for emails in new_member_email:
+            users.append(("filler", emails))
+        print new_member_email
+        added_members_response = "Members have ben added to meeting"
+        speech.speech_play_test(added_members_response)
+        ms.schedule(users, start, end)
+        speech.speech_play_test("Created meeting.")
         return "Ok, created meeting."
-    else:
-        for attendee in attendees:
-            users += utils.find_members(utils.developer_tokens['tanay'], attendee)
-        ms.schedule(users, start, end)
 
-"""
-Main function for langprocess
-Interface between voice and execution of commands 
-"""
-def process(user_input, user='charu'):
-    output = None
-    try:
-        output = translate_to_commands(user, user_input.lower().split())
-    except Exception as e:
-        print 'Not summarize or transcript'
-    try:
-        if output:
-            output = output.encode('ascii', 'ignore')
-            with open('summary.txt', 'w') as f:
-                f.write(output)
-            print 'wrote summary'
-    except Exception as e:
-        print output
-
-    for words in create_room_keywords:
-        if words in user_input.lower():
-            room_name_true = False
-            room_name = check_name_room_true(user_input)
-            added_members_true = False
-            added_members = check_add_members_true(user_input)
-            if room_name:
-                room_name_true = True
-            if added_members:
-                added_members_true = True
-            create_room_dialog(room_name_true, added_members_true, room_name, added_members)
-            break
-    for words in schedule_meeting_keywords:
-        if words in user_input.lower():
-            return schedule_meeting_dialog("2016-08-10T13:00:00","2016-08-10T14:00:00")
-
-"""
-Test calls
-"""
-# process('konichiwa charu-sama summarize hacker next week tanananay')
-# process('konichiwa charu-sama summarize hacker group 2 days ago tanananay')
-# process('konichiwa charu-sama transcribe hacker group 2 days ago tanananay')
-# process('chris tanay beast beast transcript Ping Pong SJ-29 3 days peanut', 'chris')
-# process('filler filler rename hacker to abandoned hacker', 'chris')
+#command = 'konichiwa charu-sama summarize hacker tanananay'
+#process(command)
