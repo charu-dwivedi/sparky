@@ -52,9 +52,9 @@ def get_days(user_input, index):
                 break;
         elif isInt(word):
             time = int(word)
-        elif  word == 'day' or word == 'days':
+        elif word == 'day' or word == 'days':
             unit = 'day'
-        elif word == 'hour' or 'hours':
+        elif word == 'hour' or word == 'hours':
             unit = 'hour'
         elif word == 'minute' or word == 'minutes' or word == 'min':
             unit = 'min'
@@ -67,6 +67,7 @@ def get_days(user_input, index):
             hours_limit = time
         else:
             minutes_limit = time
+
     print 'days limit: ' + str(days_limit)
     print 'hours limit: ' + str(hours_limit)
     print 'minutes limit: ' + str(minutes_limit)
@@ -246,16 +247,18 @@ def schedule_meeting_dialog(start, end, attendees=[]):
 Main function for langprocess
 Interface between voice and execution of commands 
 """
-def process(user_input):
+def process(user_input, user='charu'):
+    output = None
+    try:
+        output = translate_to_commands(user, user_input.lower().split())
+    except Exception as e:
+        print 'Not summarize or transcript'
     try:
         with open('summary.txt', 'w') as f:
-            f.write(translate_to_commands('charu', user_input.lower().split()))
+            f.write(output)
+        print 'wrote summary'
     except Exception as e:
-        print 'Not written to text'
-    else:
-        print translate_to_commands('charu', user_input.lower().split())
-    finally:
-        print 'Not summarize or transcript'
+        print output
 
     for words in create_room_keywords:
         if words in user_input.lower():
@@ -277,5 +280,6 @@ def process(user_input):
 Test calls
 """
 # process('konichiwa charu-sama summarize hacker next week tanananay')
-# process('konichiwa charu-sama summarize hacker 2 days from now tanananay')
-# process('chris', 'chris tanay beast beast transcript Ping Pong SJ-29 peanut')
+# process('konichiwa charu-sama summarize hacker group 2 days ago tanananay')
+# process('konichiwa charu-sama transcribe hacker group 2 days ago tanananay')
+# process('chris tanay beast beast transcript Ping Pong SJ-29 3 days peanut', 'chris')
